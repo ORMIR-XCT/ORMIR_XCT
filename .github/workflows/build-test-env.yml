@@ -2,14 +2,7 @@
 
 name: Test ormir_xct Python Env on Mac, Linux, Windows
 
-on:
-  workflow_dispatch:
-  pull_request:
-    branches:
-        - '*'
-  push:
-    branches:
-      - '*'
+on: [push]
 
 jobs:
   test-windows-linux:
