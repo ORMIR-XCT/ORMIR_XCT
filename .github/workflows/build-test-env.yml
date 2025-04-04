@@ -49,8 +49,7 @@ jobs:
           miniconda-version: 'latest'
           auto-update-conda: false
           auto-activate-base: false
-      - name: Check ormir_xct install
-        shell: bash -el {0}
+      - name: Install ormir_xct
         run: |
           CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip
           conda activate ormir_xct
@@ -59,6 +58,7 @@ jobs:
           conda activate ormir_xct
           pip install -r requirements.txt
           conda activate ormir_xct"
+      - name: Check ormir_xct install
         run: |
           conda info
           conda list
