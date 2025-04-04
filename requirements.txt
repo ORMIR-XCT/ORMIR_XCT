@@ -1,21 +1,25 @@
 # Internal tools
-pbr
-pip
-setuptools
 black
 flake8
-pytest
 hypothesis
+pbr
+pip
+pytest
+setuptools
 
 # Image processing
 itk
+itk-ioscanco
 itkwidgets
-vtk
-simpleitk
+ormir-xct
 scikit-image
+SimpleITK
+vtk
 
 # Numerics
 numpy
+numba
+pandas
 scipy
 
 # Jupiter Notebooks

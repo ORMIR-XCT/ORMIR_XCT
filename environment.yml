@@ -5,26 +5,27 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - itkwidgets=0.32.0
-  - numpy=1.23.3
-  - pandas=2.0.3
-  - pbr=5.4.2
-  - pip=21.2.4
-  - python=3.8.5
-  - scikit-image=0.19.2
-  - scipy=1.8.0
-  - setuptools=52.0.0
-  - simpleitk=2.0.2
-  - vtk=9.0.1
+  - pip
+  - python=3.11.11
   - pip:
-    - itk==5.3.0
-    - itk-core==5.3.0
-    - itk-filtering==5.3.0
-    - itk-io==5.3.0
-    - itk-ioscanco==0.10.0
-    - itk-numerics==5.3.0
-    - itk-registration==5.3.0
-    - itk-segmentation==5.3.0
-    - notebook==6.5.2
-    - numba==0.56.3
-    - kimimaro==3.3.0
+    - ormir-xct==1.0.1
+    - itk
+    - itk-core
+    - itk-filtering
+    - itk-io
+    - itk-ioscanco
+    - itk-numerics
+    - itk-registration
+    - itk-segmentation
+    - itkwidgets
+    - kimimaro
+    - notebook
+    - numpy
+    - numba
+    - pandas
+    - pbr
+    - scipy
+    - scikit-image
+    - setuptools
+    - SimpleITK
+    - vtk
