@@ -40,26 +40,31 @@ jobs:
       fail-fast: false
       matrix:
         os: ["macos-15"]
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./
-        id: setup-miniforge
-        continue-on-error: true
+      - uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-version: latest
-      - name: Check arm64
-        shell: bash -el {0}
+          python-version: 3.11.11
+          miniconda-version: 'latest'
+          auto-update-conda: false
+          auto-activate-base: false
+      - name: Install ormir_xct
         run: |
-          conda install -y python
-          python -c "import platform; assert platform.machine() == 'arm64', platform.machine()"
-      - name: Check dependency install
-        shell: bash -el {0}
-        run: |
-          conda install -y python
+          CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip
+          conda activate ormir_xct
+          conda env config vars set CONDA_SUBDIR=osx-64
+          conda deactivate
+          conda activate ormir_xct
           pip install -r requirements.txt
-          pconda info
+      - name: Check ormir_xct install
+        run: |
+          conda info
           conda list
           python -c "import itk"
           python -c "import vtk"
           python -c "import SimpleITK"
+          python -c "import itk-ioscanco"
           python -c "import ormir-xct"
