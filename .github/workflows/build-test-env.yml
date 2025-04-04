@@ -31,7 +31,6 @@ jobs:
           python -c "import itk"
           python -c "import vtk"
           python -c "import SimpleITK"
-          python -c "import itk-ioscanco"
           python -c "import ormir-xct"
           
   test-apple-silicon:
@@ -51,6 +50,7 @@ jobs:
           auto-activate-base: false
       - name: Install ormir_xct
         run: |
+          conda init
           CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip
           conda activate ormir_xct
           conda env config vars set CONDA_SUBDIR=osx-64
