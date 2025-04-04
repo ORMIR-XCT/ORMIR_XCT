@@ -41,7 +41,7 @@ jobs:
           python -c "import itk-ioscanco"
           python -c "import ormir-xct"
       
-    name: Apple Silicon (os=${{ matrix.os }})
+    name: Apple Silicon
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
