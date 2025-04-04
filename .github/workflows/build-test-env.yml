@@ -12,7 +12,7 @@ on:
       - '*'
 
 jobs:
-  runtests:
+  test-windows-linux:
     name: Windows and Linux
     runs-on: ${{ matrix.os }}
     strategy:
@@ -40,7 +40,8 @@ jobs:
           python -c "import SimpleITK"
           python -c "import itk-ioscanco"
           python -c "import ormir-xct"
-      
+          
+  test-apple-silicon:
     name: Apple Silicon
     runs-on: ${{ matrix.os }}
     strategy:
