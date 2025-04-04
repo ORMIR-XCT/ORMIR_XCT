@@ -61,6 +61,7 @@ jobs:
           pip install -r requirements.txt
       - name: Check ormir_xct install
         run: |
+          conda activate ormir_xct
           conda info
           conda list
           python -c "import itk"
