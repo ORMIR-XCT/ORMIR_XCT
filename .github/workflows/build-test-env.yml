@@ -50,14 +50,12 @@ jobs:
           auto-activate-base: false
       - name: Install ormir_xct
         run: |
-          conda init
           CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip
-          conda activate ormir_xct
+          $CONDA/bin/activate ormir_xct
           conda env config vars set CONDA_SUBDIR=osx-64
           conda deactivate
-          conda activate ormir_xct
+          $CONDA/bin/activate ormir_xct
           pip install -r requirements.txt
-          conda activate ormir_xct"
       - name: Check ormir_xct install
         run: |
           conda info
