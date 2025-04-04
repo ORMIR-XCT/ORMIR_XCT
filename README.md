@@ -20,6 +20,7 @@
 
 <ins>***For Apple Silicon Mac (M-chips):***</ins>
 #### Step 1: Install the ormir_xct Anaconda environment, specifying macOS architecture:
+
 `CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip`
 
 #### Step 2: Activate the ormir_xct environment:
@@ -30,7 +31,7 @@
 
 #### Step 4: Deactivate and reactivate the environment:
 `conda deactivate`
-`conda activate bl`
+`conda activate ormir_xct`
 
 #### Step 5: Install the required dependencies using pip:
 `pip install -r requirements.txt`
