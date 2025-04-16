@@ -7,6 +7,10 @@
 - ORMIR_XCT is a Python package for processing high resolution peripheral computed tomography (HR-pQCT) scans. 
 - Development of this project began during the 2022 “Building the Jupyter Community in Musculoskeletal Imaging Research” workshop hosted by the Open and Reproducible Musculoskeletal Imaging Research (ORMIR) group.
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/ORMIR-XCT/ORMIR_XCT/blob/main/LICENSE)
+![PyPI - Version](https://img.shields.io/pypi/v/ormir-xct?link=https%3A%2F%2Fpypi.org%2Fproject%2Formir-xct%2F)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ORMIR-XCT/ORMIR_XCT/build-test-env.yml)
+
 ---
 
 ## Installation
