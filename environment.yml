@@ -8,7 +8,7 @@ dependencies:
   - pip
   - python=3.11.11
   - pip:
-    - ormir-xct==1.0.1
+    - ormir-xct
     - itk
     - itk-core
     - itk-filtering
