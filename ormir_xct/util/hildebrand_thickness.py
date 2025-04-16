@@ -12,14 +12,12 @@ from __future__ import annotations
 import numpy as np
 from collections.abc import Iterable
 from numba import jit
-from SimpleITK import GetImageFromArray, GetArrayFromImage, SignedMaurerDistanceMap
 import SimpleITK as sitk
 from scipy.ndimage.morphology import (
     binary_erosion,
     binary_dilation,
     distance_transform_edt,
 )
-from skimage.morphology import skeletonize_3d
 from typing import Optional, Union
 import warnings
 
