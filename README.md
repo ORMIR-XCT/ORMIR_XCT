@@ -30,7 +30,7 @@
 `conda env config vars set CONDA_SUBDIR=osx-64`
 
 #### Step 4: Deactivate and reactivate the environment:
-`conda deactivate`
+`conda deactivate`<br>
 `conda activate ormir_xct`
 
 #### Step 5: Install the required dependencies using pip:
