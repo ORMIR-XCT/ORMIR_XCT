@@ -1,0 +1,41 @@
+import vtk
+import vtkbone
+import numpy as np
+from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
+
+#---------------#
+# AIM Reading
+#---------------#
+aim_reader = vtkbone.vtkboneAIMReader()
+aim_reader.SetFileName("/Users/sarahelmahdy/Desktop/ORMIR_XCT/startup/DYNACT2_214_TMC_MID.AIM")
+aim_reader.DataOnCellsOff()
+aim_reader.Update()
+# log = aim_reader.GetProcessingLog()
+aim = aim_reader.GetOutput()
+
+# print(log)
+
+array = vtk_to_numpy(aim.GetPointData().GetScalars())
+
+# Need to use Fortran-like index ordering for OpenVMS
+array = array.reshape(aim.GetDimensions(), order='F')
+
+#---------------#
+# NIFTI Writing
+#---------------#
+# Convert NumPy array back to VTK image 
+temp = np.ascontiguousarray(np.atleast_3d(array))
+vtk_image = vtk.vtkImageData()
+vtkArray = numpy_to_vtk(
+    temp.ravel(order='F'),
+    deep=True, array_type=vtk.VTK_SHORT
+)
+vtk_image.SetDimensions(array.shape)
+vtk_image.SetSpacing(aim.GetSpacing())
+vtk_image.SetOrigin(aim.GetOrigin())
+vtk_image.GetPointData().SetScalars(vtkArray)
+
+nifti_writer = vtk.vtkNIFTIImageWriter()
+nifti_writer.SetInputData(vtk_image)
+nifti_writer.SetFileName("/Users/sarahelmahdy/Desktop/ORMIR_XCT/ormir_xct/util/tests/test.nii")
+nifti_writer.Write()
