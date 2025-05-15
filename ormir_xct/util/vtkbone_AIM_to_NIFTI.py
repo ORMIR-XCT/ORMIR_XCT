@@ -6,8 +6,10 @@ from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 #---------------#
 # AIM Reading
 #---------------#
+file_path = "/Users/sarahelmahdy/Desktop/ORMIR_XCT/startup/DYNACT2_214_TMC_MID.AIM"
+
 aim_reader = vtkbone.vtkboneAIMReader()
-aim_reader.SetFileName("/Users/sarahelmahdy/Desktop/ORMIR_XCT/startup/DYNACT2_214_TMC_MID.AIM")
+aim_reader.SetFileName(file_path)
 aim_reader.DataOnCellsOff()
 aim_reader.Update()
 # log = aim_reader.GetProcessingLog()
