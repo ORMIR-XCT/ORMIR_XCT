@@ -9,11 +9,12 @@ nifti_read_path = "example/test.nii"
 isq_write_path = "test/test5.isq"
 
 output_image = sitk.ReadImage(nifti_read_path, sitk.sitkInt16)
-outputImageISQ = sitk_itk(output_image)
 
 #---------------#
 # ISQ Writing
 #---------------#
+
+outputImageISQ = sitk_itk(output_image)
 image_type = itk.Image[itk.ctype("signed short"), 3]
 writer = itk.ImageFileWriter[image_type].New()
 image_io = itk.ScancoImageIO.New()
