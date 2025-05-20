@@ -6,7 +6,7 @@ from ormir_xct.util.sitk_itk import sitk_itk
 # NIFTI Reading
 #---------------#
 nifti_read_path = "example/test.nii"
-isq_write_path = "/test/test.isq"
+isq_write_path = "test/test5.isq"
 
 output_image = sitk.ReadImage(nifti_read_path, sitk.sitkInt16)
 outputImageISQ = sitk_itk(output_image)

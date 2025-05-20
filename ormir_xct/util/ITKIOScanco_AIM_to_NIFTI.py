@@ -6,7 +6,7 @@ from ormir_xct.util.sitk_itk import itk_sitk
 # AIM Reading
 #---------------#
 aim_read_path = "example/DYNACT2_214_TMC_MID.AIM"
-nifti_write_path = "test/test2.nii"
+nifti_write_path = "test/test3.nii"
 
 image_type = itk.Image[itk.ctype("signed short"), 3]
 reader = itk.ImageFileReader[image_type].New()

@@ -7,7 +7,7 @@ from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 # AIM Reading
 #---------------#
 aim_read_path = "example/DYNACT2_214_TMC_MID.AIM"
-nifti_write_path = "test/test.nii"
+nifti_write_path = "test/test1.nii"
 
 aim_reader = vtkbone.vtkboneAIMReader()
 aim_reader.SetFileName(aim_read_path)
@@ -37,5 +37,5 @@ vtk_image.GetPointData().SetScalars(vtkArray)
 
 nifti_writer = vtk.vtkNIFTIImageWriter()
 nifti_writer.SetInputData(vtk_image)
-nifti_writer.SetFileName("nifti_write_path")
+nifti_writer.SetFileName(nifti_write_path)
 nifti_writer.Write()

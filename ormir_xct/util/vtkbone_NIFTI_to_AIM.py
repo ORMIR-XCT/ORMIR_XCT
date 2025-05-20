@@ -7,7 +7,7 @@ from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 # AIM Reading
 #-------------#
 nifti_read_path = "example/test.nii"
-aim_write_path = "tests/test.AIM"
+aim_write_path = "test/test2.AIM"
 
 nifti_reader = vtk.vtkNIFTIImageReader()
 nifti_reader.SetFileName(nifti_read_path)

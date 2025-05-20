@@ -5,8 +5,8 @@ from ormir_xct.util.sitk_itk import itk_sitk
 #---------------#
 # ISQ Reading
 #---------------#
-isq_read_path = "example/test.isq"
-nifti_write_path = "tests/test2.nii"
+isq_read_path = "example/C0004255.ISQ"
+nifti_write_path = "test/test4.nii"
 
 image_type = itk.Image[itk.ctype("signed short"), 3]
 reader = itk.ImageFileReader[image_type].New()
