@@ -69,6 +69,9 @@ def aim_reader(input_image):
 
     reader_output: vtkboneFiniteElementModel
         AIM reader output data object
+    
+    aim_reader: vtkboneAIMReader
+        vtkboneAIMReader class object
     """
     aim_reader = vtkbone.vtkboneAIMReader()
     aim_reader.SetFileName(input_image)
