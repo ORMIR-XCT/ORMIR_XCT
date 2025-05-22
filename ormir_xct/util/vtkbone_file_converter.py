@@ -30,7 +30,7 @@ def file_read(input_image, output_image):
     if os.path.isfile(input_image) and (".nii" in input_extension.lower()):
         array, reader_output = nifti_reader(input_image)
     elif ".aim" in input_extension.lower():
-        array, reader_output = aim_reader(input_image)
+        array, reader_output, aim_reader_output = aim_reader(input_image)
     else:
         print()
         print("Error: input file extension must be AIM or NII.")
@@ -81,7 +81,7 @@ def aim_reader(input_image):
     
     dims = aim.GetDimensions()
     array = array.reshape(dims, order='F')
-    return array, aim
+    return array, aim, aim_reader
 
 def aim_writer(output_image, array, reader_output):
     """
