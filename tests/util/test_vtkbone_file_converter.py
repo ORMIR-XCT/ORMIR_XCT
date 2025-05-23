@@ -75,56 +75,84 @@ class TestFileConverter(unittest.TestCase):
         Test the conversion of Scanco AIM to NIFTI using vtkbone and vtk.
         """
         extension = os.path.splitext(self.test_aim_to_nii_temp)[1]
-        self.assertTrue(extension.lower() == ".nii")
+        self.assertEqual(extension.lower(), ".nii")
 
         file_read(self.test_aim_temp, self.test_aim_to_nii_temp)
 
-        
-        
+        _, input_image, _ = aim_reader(self.test_aim_temp)
+        _, output_image = nifti_reader(self.test_aim_to_nii_temp)
+
+        self.spacing_check(input_image, output_image)
+        self.position_check(input_image, output_image)
 
     def test_nii_to_aim(self):
         """
         Test the conversion of Scanco NIFTI to AIM using vtkbone and vtk.
         """
         extension = os.path.splitext(self.test_nii_to_aim_temp)[1]
-        self.assertTrue(extension.lower() == ".AIM")
+        self.assertEqual(extension.lower(), ".aim")
 
         file_read(self.test_nii_temp, self.test_nii_to_aim_temp)
 
+        _, input_image = nifti_reader(self.test_nii_temp)
+        _, output_image, _ = aim_reader(self.test_nii_to_aim_temp)
+
+        self.spacing_check(input_image, output_image)
+        self.position_check(input_image, output_image)
     
     def test_aim_read(self):
         """
         Test the reading of a Scanco AIM file.
         """
-        
-    
+        array, reader_output, _ = aim_reader(self.test_aim_temp)
+        self.assertIsNotNone(array)
+        self.assertEqual(reader_output.GetDataObjectType(), vtk.VTK_IMAGE_DATA)
+
     def test_aim_write(self):
         """
         Test the writing of a Scanco AIM file.
         """
-        
-    
+        array, reader_output, _ = aim_reader(self.test_aim_temp)
+        aim_writer(self.test_aim_to_nii_temp.replace(".nii", ".AIM"), array, reader_output)
+        self.assertTrue(os.path.exists(self.test_aim_to_nii_temp.replace(".nii", ".AIM")))
+
     def test_nii_read(self):
         """
         Test the reading of a Scanco NIFTI file.
         """
-        
-    
+        array, reader_output = nifti_reader(self.test_nii_temp)
+        self.assertIsNotNone(array)
+        self.assertEqual(reader_output.GetDataObjectType(), vtk.VTK_IMAGE_DATA)
+
     def test_nii_write(self):
         """
         Test the writing of a Scanco NIFTI file.
         """
-        
-    
+        array, reader_output = nifti_reader(self.test_nii_temp)
+        nifti_writer(self.test_nii_to_aim_temp.replace(".AIM", ".nii"), array, reader_output)
+        self.assertTrue(os.path.exists(self.test_nii_to_aim_temp.replace(".AIM", ".nii")))
+
     def test_wrong_input_type(self):
         """
-        Test the handel of incorrect input type files.
+        Test handling of incorrect input type files.
         """
-        
-    
+        dummy_input = os.path.join(self.test_dir, "dummy.txt")
+        with open(dummy_input, "w") as f:
+            f.write("Invalid content")
+
+        with self.assertRaises(SystemExit) as cm:
+            file_read(dummy_input, self.test_nii_to_aim_temp)
+
+        self.assertEqual(cm.exception.code, 1)
+
     def test_wrong_output_type(self):
         """
-        Test the handel of incorrect output type files.
+        Test handling of incorrect output type files.
         """
+        with self.assertRaises(SystemExit) as cm:
+            file_read(self.test_nii_temp, os.path.join(self.test_dir, "bad_format.txt"))
+
+        self.assertEqual(cm.exception.code, 1)
+
         
     

@@ -102,7 +102,7 @@ class TestFileConverter(unittest.TestCase):
         Test the conversion of Scanco AIM to NIFTI using ITKIOScanco and SimpleITK.
         """
         extension = os.path.splitext(self.test_aim_to_nii_temp)[1]
-        self.assertTrue(extension.lower() == ".nii")
+        self.assertEqual(extension.lower(), ".nii")
 
         file_read(self.test_aim_temp, self.test_aim_to_nii_temp)
 
@@ -113,14 +113,13 @@ class TestFileConverter(unittest.TestCase):
         reader.SetFileName(self.test_aim_temp)
         reader.Update()
 
-        aim_file = itk.imread(self.test_aim_to_nii_temp)
-        nii_file = itk.imread(self.test_aim_to_nii_temp)
+        aim_file = itk_sitk(reader.GetOutput())
+        nii_file = sitk.ReadImage(self.test_aim_to_nii_temp)
 
         self.spacing_check(aim_file, nii_file)
         self.dimension_check(aim_file, nii_file)
         self.position_check(aim_file, nii_file)
         self.direction_check(aim_file, nii_file)
-
     
     def test_nii_to_isq(self):
         """
@@ -130,6 +129,22 @@ class TestFileConverter(unittest.TestCase):
         self.assertTrue(extension.lower() == ".ISQ")
 
         file_read(self.test_nii_temp, self.test_nii_to_isq_temp)
+        
+        nifti_file = sitk.ReadImage(self.test_nii_temp, sitk.sitkInt16)
+
+        image_type = itk.Image[itk.ctype("signed short"), 3]
+        reader = itk.ImageFileReader[image_type].New()
+        io = itk.ScancoImageIO.New()
+        reader.SetImageIO(io)
+        reader.SetFileName(self.test_nii_to_isq_temp)
+        reader.Update()
+
+        isq_file = itk_sitk(reader.GetOutput())
+
+        self.spacing_check(nifti_file, isq_file)
+        self.dimension_check(nifti_file, isq_file)
+        self.position_check(nifti_file, isq_file)
+        self.direction_check(nifti_file, isq_file)
         
     
     def test_isq_to_nii(self):
@@ -148,8 +163,8 @@ class TestFileConverter(unittest.TestCase):
         reader.SetFileName(self.test_isq_temp)
         reader.Update()
 
-        isq_file = itk.imread(self.test_isq_to_nii_temp)
-        nii_file = itk.imread(self.test_isq_to_nii_temp)
+        isq_file = itk_sitk(reader.GetOutput())
+        nii_file = sitk.ReadImage(self.test_isq_to_nii_temp)
         # ORIGIN WONT BE THE SAME!!!!!!!!
         
         self.spacing_check(isq_file, nii_file)
@@ -161,41 +176,74 @@ class TestFileConverter(unittest.TestCase):
         """
         Test the reading of a Scanco AIM file.
         """
-        
-    
-    def test_nii_read(self):
-        """
-        Test the reading of a Scanco NIFTI file.
-        """
-        
-    
-    def test_nii_write(self):
-        """
-        Test the writing of a Scanco NIFTI file.
-        """
-        
-    
+        image_type = itk.Image[itk.ctype("signed short"), 3]
+        reader = itk.ImageFileReader[image_type].New()
+        io = itk.ScancoImageIO.New()
+        reader.SetFileName(self.test_aim_temp)
+        reader.SetImageIO(io)
+        reader.Update()
+
+        image = reader.GetOutput()
+        self.assertIsInstance(image, image_type)
+
     def test_isq_read(self):
         """
         Test the reading of a Scanco ISQ file.
         """
-        
-    
+        image_type = itk.Image[itk.ctype("signed short"), 3]
+        reader = itk.ImageFileReader[image_type].New()
+        io = itk.ScancoImageIO.New()
+        reader.SetFileName(self.test_isq_temp)
+        reader.SetImageIO(io)
+        reader.Update()
+
+        image = reader.GetOutput()
+        self.assertIsInstance(image, image_type)
+
+    def test_nii_read(self):
+        """
+        Test the reading of a NIFTI file.
+        """
+        image = sitk.ReadImage(self.test_nii_temp, sitk.sitkInt16)
+        self.assertIsInstance(image, sitk.Image)
+
+    def test_nii_write(self):
+        """
+        Test the writing of a NIFTI file.
+        """
+        image = sitk.ReadImage(self.test_nii_temp, sitk.sitkInt16)
+        output_path = os.path.join(self.test_dir, "write_test.nii")
+        sitk.WriteImage(image, output_path)
+        self.assertTrue(os.path.exists(output_path))
+
     def test_isq_write(self):
         """
         Test the writing of a Scanco ISQ file.
         """
-        
-    
+        image = sitk.ReadImage(self.test_nii_temp, sitk.sitkInt16)
+        output_path = os.path.join(self.test_dir, "write_test.ISQ")
+        isq_writer(output_path, image)
+        self.assertTrue(os.path.exists(output_path))
+
     def test_wrong_input_type(self):
         """
-        Test the handel of incorrect input type files.
+        Test the handling of incorrect input type files.
         """
-        
-    
+        dummy_input = os.path.join(self.test_dir, "invalid.txt")
+        with open(dummy_input, "w") as f:
+            f.write("This is not an image.")
+
+        with self.assertRaises(SystemExit) as cm:
+            file_read(dummy_input, self.test_nii_to_isq_temp)
+        self.assertEqual(cm.exception.code, 1)
+
     def test_wrong_output_type(self):
         """
-        Test the handel of incorrect output type files.
+        Test the handling of incorrect output type files.
         """
+        with self.assertRaises(SystemExit) as cm:
+            file_read(self.test_nii_temp, os.path.join(self.test_dir, "bad_format.txt"))
+        self.assertEqual(cm.exception.code, 1)
+
         
     
