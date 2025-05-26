@@ -13,8 +13,8 @@ import SimpleITK as sitk
 from ormir_xct.util.ITK_file_converter import file_read, nifti_reader, nifti_writer, isq_writer, aim_isq_reader
 from ormir_xct.util.sitk_itk import itk_sitk, sitk_itk
 
-class TestFileConverter(unittest.TestCase):
-    def setup(self):
+class TestITKFileConverter(unittest.TestCase):
+    def setUp(self):
         self.filenames = [
             "test_aim",
             "test_isq",
@@ -69,25 +69,25 @@ class TestFileConverter(unittest.TestCase):
         input_spacing = input_image.GetSpacing()
         output_spacing = output_image.GetSpacing()
 
-        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4, "Spacinging doesn't match.")
-        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4, "Spacinging doesn't match.")
-        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4, "Spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4, "x spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4, "y Spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4, "z Spacinging doesn't match.")
 
     def dimension_check(self, input_image, output_image):
         input_size = input_image.GetSize()
         output_size = output_image.GetSize()
 
-        self.assertAlmostEqual(input_size[0], output_size[0], 4, "Dimension doesn't match.")
-        self.assertAlmostEqual(input_size[1], output_size[1], 4, "Dimension doesn't match.")
-        self.assertAlmostEqual(input_size[2], output_size[2], 4, "Dimension doesn't match.")
+        self.assertAlmostEqual(input_size[0], output_size[0], 4, "x dimension doesn't match.")
+        self.assertAlmostEqual(input_size[1], output_size[1], 4, "y dimension doesn't match.")
+        self.assertAlmostEqual(input_size[2], output_size[2], 4, "z dimension doesn't match.")
 
     def position_check(self, input_image, output_image):
         input_origin = input_image.GetOrigin()
         output_origin = output_image.GetOrigin()
 
-        self.assertAlmostEqual(input_origin[0], output_origin[0], 4, "Position doesn't match")
-        self.assertAlmostEqual(input_origin[1], output_origin[1], 4, "Position doesn't match")
-        self.assertAlmostEqual(input_origin[2], output_origin[2], 4, "Position doesn't match")
+        self.assertAlmostEqual(input_origin[0], output_origin[0], 4, "x position doesn't match")
+        self.assertAlmostEqual(input_origin[1], output_origin[1], 4, "y position doesn't match")
+        self.assertAlmostEqual(input_origin[2], output_origin[2], 4, "z position doesn't match")
 
     def direction_check(self, input_image, output_image):
         input_direction = input_image.GetDirection()
@@ -126,7 +126,7 @@ class TestFileConverter(unittest.TestCase):
         Test the conversion of Scanco NIFTI to ISQ using ITKIOScanco and SimpleITK.
         """
         extension = os.path.splitext(self.test_nii_to_isq_temp)[1]
-        self.assertTrue(extension.lower() == ".ISQ")
+        self.assertTrue(extension.lower() == ".isq")
 
         file_read(self.test_nii_temp, self.test_nii_to_isq_temp)
         
@@ -139,7 +139,9 @@ class TestFileConverter(unittest.TestCase):
         reader.SetFileName(self.test_nii_to_isq_temp)
         reader.Update()
 
+        nii_file = sitk.ReadImage(self.test_nii_temp)
         isq_file = itk_sitk(reader.GetOutput())
+        isq_file.SetOrigin(nii_file.GetOrigin())
 
         self.spacing_check(nifti_file, isq_file)
         self.dimension_check(nifti_file, isq_file)
