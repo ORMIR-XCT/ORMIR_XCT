@@ -102,7 +102,7 @@ class TestITKFileConverter(unittest.TestCase):
         Test the conversion of Scanco AIM to NIFTI using ITKIOScanco and SimpleITK.
         """
         extension = os.path.splitext(self.test_aim_to_nii_temp)[1]
-        self.assertEqual(extension.lower(), ".nii")
+        self.assertEqual(extension.lower(), ".nii", "Extension doesn't match")
 
         file_read(self.test_aim_temp, self.test_aim_to_nii_temp)
 
@@ -126,7 +126,7 @@ class TestITKFileConverter(unittest.TestCase):
         Test the conversion of Scanco NIFTI to ISQ using ITKIOScanco and SimpleITK.
         """
         extension = os.path.splitext(self.test_nii_to_isq_temp)[1]
-        self.assertTrue(extension.lower() == ".isq")
+        self.assertTrue(extension.lower() == ".isq", "Extension doesn't match")
 
         file_read(self.test_nii_temp, self.test_nii_to_isq_temp)
         
@@ -154,7 +154,7 @@ class TestITKFileConverter(unittest.TestCase):
         Test the conversion of Scanco ISQ to NIFTI using ITKIOScanco and SimpleITK.
         """
         extension = os.path.splitext(self.test_isq_to_nii_temp)[1]
-        self.assertTrue(extension.lower() == ".nii")
+        self.assertTrue(extension.lower() == ".nii", "Extension doesn't match")
 
         file_read(self.test_isq_temp, self.test_isq_to_nii_temp)
 
@@ -237,15 +237,16 @@ class TestITKFileConverter(unittest.TestCase):
 
         with self.assertRaises(SystemExit) as cm:
             file_read(dummy_input, self.test_nii_to_isq_temp)
-        self.assertEqual(cm.exception.code, 1)
+        self.assertEqual(cm.exception.code, 1, "Invalid file input was not catched")
 
     def test_wrong_output_type(self):
         """
         Test the handling of incorrect output type files.
         """
         with self.assertRaises(SystemExit) as cm:
-            file_read(self.test_nii_temp, os.path.join(self.test_dir, "bad_format.txt"))
-        self.assertEqual(cm.exception.code, 1)
+            file_read(self.test_nii_temp, os.path.join(self.test_dir, "invalid.txt"))
+
+        self.assertEqual(cm.exception.code, 1, "Invalid file input was not catched")
 
         
     

@@ -75,7 +75,7 @@ class TestVTKboneFileConverter(unittest.TestCase):
         Test the conversion of Scanco AIM to NIFTI using vtkbone and vtk.
         """
         extension = os.path.splitext(self.test_aim_to_nii_temp)[1]
-        self.assertEqual(extension.lower(), ".nii")
+        self.assertEqual(extension.lower(), ".nii", "Extension doesn't match")
 
         file_read(self.test_aim_temp, self.test_aim_to_nii_temp)
 
@@ -91,7 +91,7 @@ class TestVTKboneFileConverter(unittest.TestCase):
         Test the conversion of Scanco NIFTI to AIM using vtkbone and vtk.
         """
         extension = os.path.splitext(self.test_nii_to_aim_temp)[1]
-        self.assertEqual(extension.lower(), ".aim")
+        self.assertEqual(extension.lower(), ".aim", "Extension doesn't match")
 
         file_read(self.test_nii_temp, self.test_nii_to_aim_temp)
 
@@ -138,23 +138,23 @@ class TestVTKboneFileConverter(unittest.TestCase):
         """
         Test handling of incorrect input type files.
         """
-        dummy_input = os.path.join(self.test_dir, "dummy.txt")
+        dummy_input = os.path.join(self.test_dir, "invalid.txt")
         with open(dummy_input, "w") as f:
             f.write("Invalid content")
 
         with self.assertRaises(SystemExit) as cm:
             file_read(dummy_input, self.test_nii_to_aim_temp)
 
-        self.assertEqual(cm.exception.code, 1)
+        self.assertEqual(cm.exception.code, 1, "Invalid file input was not catched")
 
     def test_wrong_output_type(self):
         """
         Test handling of incorrect output type files.
         """
         with self.assertRaises(SystemExit) as cm:
-            file_read(self.test_nii_temp, os.path.join(self.test_dir, "bad_format.txt"))
+            file_read(self.test_nii_temp, os.path.join(self.test_dir, "invalid.txt"))
 
-        self.assertEqual(cm.exception.code, 1)
+        self.assertEqual(cm.exception.code, 1, "Invalid file output was not catched")
 
         
     
