@@ -58,17 +58,17 @@ class TestFileConverter(unittest.TestCase):
         input_spacing = input_image.GetSpacing()
         output_spacing = output_image.GetSpacing()
 
-        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4)
-        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4)
-        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4)
+        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4, "Spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4, "Spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4, "Spacinging doesn't match.")
     
     def position_check(self, input_image, output_image):
         input_origin = input_image.GetOrigin()
         output_origin = output_image.GetOrigin()
 
-        self.assertAlmostEqual(input_origin[0], output_origin[0], 4)
-        self.assertAlmostEqual(input_origin[1], output_origin[1], 4)
-        self.assertAlmostEqual(input_origin[2], output_origin[2], 4)
+        self.assertAlmostEqual(input_origin[0], output_origin[0], 4, "Position doesn't match")
+        self.assertAlmostEqual(input_origin[1], output_origin[1], 4, "Position doesn't match")
+        self.assertAlmostEqual(input_origin[2], output_origin[2], 4, "Position doesn't match")
     
     def test_aim_to_nii(self):
         """

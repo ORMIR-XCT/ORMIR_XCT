@@ -69,33 +69,33 @@ class TestFileConverter(unittest.TestCase):
         input_spacing = input_image.GetSpacing()
         output_spacing = output_image.GetSpacing()
 
-        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4)
-        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4)
-        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4)
+        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4, "Spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4, "Spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4, "Spacinging doesn't match.")
 
     def dimension_check(self, input_image, output_image):
         input_size = input_image.GetSize()
         output_size = output_image.GetSize()
 
-        self.assertAlmostEqual(input_size[0], output_size[0], 4)
-        self.assertAlmostEqual(input_size[1], output_size[1], 4)
-        self.assertAlmostEqual(input_size[2], output_size[2], 4)
+        self.assertAlmostEqual(input_size[0], output_size[0], 4, "Dimension doesn't match.")
+        self.assertAlmostEqual(input_size[1], output_size[1], 4, "Dimension doesn't match.")
+        self.assertAlmostEqual(input_size[2], output_size[2], 4, "Dimension doesn't match.")
 
     def position_check(self, input_image, output_image):
         input_origin = input_image.GetOrigin()
         output_origin = output_image.GetOrigin()
 
-        self.assertAlmostEqual(input_origin[0], output_origin[0], 4)
-        self.assertAlmostEqual(input_origin[1], output_origin[1], 4)
-        self.assertAlmostEqual(input_origin[2], output_origin[2], 4)
+        self.assertAlmostEqual(input_origin[0], output_origin[0], 4, "Position doesn't match")
+        self.assertAlmostEqual(input_origin[1], output_origin[1], 4, "Position doesn't match")
+        self.assertAlmostEqual(input_origin[2], output_origin[2], 4, "Position doesn't match")
 
     def direction_check(self, input_image, output_image):
         input_direction = input_image.GetDirection()
         output_direction = output_image.GetDirection()
 
-        self.assertAlmostEqual(input_direction[0], output_direction[0], 4)
-        self.assertAlmostEqual(input_direction[1], output_direction[1], 4)
-        self.assertAlmostEqual(input_direction[2], output_direction[2], 4)
+        self.assertAlmostEqual(input_direction[0], output_direction[0], 4, "Direction doesn't match")
+        self.assertAlmostEqual(input_direction[1], output_direction[1], 4, "Direction doesn't match")
+        self.assertAlmostEqual(input_direction[2], output_direction[2], 4, "Direction doesn't match")
     
     def test_aim_to_nii(self):
         """
