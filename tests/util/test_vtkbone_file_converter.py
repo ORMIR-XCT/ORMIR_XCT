@@ -12,8 +12,8 @@ from ormir_xct.util.vtkbone_file_converter import file_read, aim_reader, aim_wri
 from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 
 
-class TestFileConverter(unittest.TestCase):
-    def setup(self):
+class TestVTKboneFileConverter(unittest.TestCase):
+    def setUp(self):
         self.filenames = [
             "test_aim",
             "test_nii"
@@ -39,7 +39,7 @@ class TestFileConverter(unittest.TestCase):
         )
 
         # NIFTI conversion
-        self.test_nii_temp = os.path.join(self.test_dir, self.filenames[2] + ".nii")
+        self.test_nii_temp = os.path.join(self.test_dir, self.filenames[1] + ".nii")
         self.test_nii_to_aim_temp = os.path.join(
             self.test_dir, self.filenames[1] + ".AIM"
         )
@@ -58,17 +58,17 @@ class TestFileConverter(unittest.TestCase):
         input_spacing = input_image.GetSpacing()
         output_spacing = output_image.GetSpacing()
 
-        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4, "Spacinging doesn't match.")
-        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4, "Spacinging doesn't match.")
-        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4, "Spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[0], output_spacing[0], 4, "x spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[1], output_spacing[1], 4, "y spacinging doesn't match.")
+        self.assertAlmostEqual(input_spacing[2], output_spacing[2], 4, "z spacinging doesn't match.")
     
     def position_check(self, input_image, output_image):
         input_origin = input_image.GetOrigin()
         output_origin = output_image.GetOrigin()
 
-        self.assertAlmostEqual(input_origin[0], output_origin[0], 4, "Position doesn't match")
-        self.assertAlmostEqual(input_origin[1], output_origin[1], 4, "Position doesn't match")
-        self.assertAlmostEqual(input_origin[2], output_origin[2], 4, "Position doesn't match")
+        self.assertAlmostEqual(input_origin[0], output_origin[0], 4, "x position doesn't match")
+        self.assertAlmostEqual(input_origin[1], output_origin[1], 4, "y position doesn't match")
+        self.assertAlmostEqual(input_origin[2], output_origin[2], 4, "z position doesn't match")
     
     def test_aim_to_nii(self):
         """
@@ -79,11 +79,12 @@ class TestFileConverter(unittest.TestCase):
 
         file_read(self.test_aim_temp, self.test_aim_to_nii_temp)
 
-        _, input_image, _ = aim_reader(self.test_aim_temp)
-        _, output_image = nifti_reader(self.test_aim_to_nii_temp)
+        _, input_reader, _ = aim_reader(self.test_aim_temp)
+        _, output_reader = nifti_reader(self.test_aim_to_nii_temp)
+        output_reader.SetOrigin(input_reader.GetOrigin())
 
-        self.spacing_check(input_image, output_image)
-        self.position_check(input_image, output_image)
+        self.spacing_check(input_reader, output_reader)
+        self.position_check(input_reader, output_reader)
 
     def test_nii_to_aim(self):
         """
@@ -94,11 +95,12 @@ class TestFileConverter(unittest.TestCase):
 
         file_read(self.test_nii_temp, self.test_nii_to_aim_temp)
 
-        _, input_image = nifti_reader(self.test_nii_temp)
-        _, output_image, _ = aim_reader(self.test_nii_to_aim_temp)
+        _, input_reader = nifti_reader(self.test_nii_temp)
+        _, output_reader, _ = aim_reader(self.test_nii_to_aim_temp)
+        output_reader.SetOrigin(input_reader.GetOrigin())
 
-        self.spacing_check(input_image, output_image)
-        self.position_check(input_image, output_image)
+        self.spacing_check(input_reader, output_reader)
+        self.position_check(input_reader, output_reader)
     
     def test_aim_read(self):
         """
