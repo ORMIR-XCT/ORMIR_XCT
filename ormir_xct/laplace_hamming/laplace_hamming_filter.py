@@ -25,6 +25,9 @@ def image_read(input_image, segmentation=False, write_path=None):
     
     Returns
     -------
+    filtered_image_np : array
+        The result of applying the FFT Laplace Hamming filter.
+
     """
 
     # Extract directory, filename, basename, and extensions from the input image
@@ -49,6 +52,8 @@ def image_read(input_image, segmentation=False, write_path=None):
         else:
             print("Error: No output path was provided.")
             sys.exit(1)
+    
+    return filtered_image_np
 
 def compute_laplacian_filter(shape):
     """
@@ -96,22 +101,22 @@ def apply_hamming_window(frequency_domain, cutoff_ratio, amplitude):
     shape = frequency_domain.shape
     shape_x = shape[0]
     shape_y = shape[1]
-    shape_x = shape[2]
+    shape_z = shape[2]
 
     # Get the hamming window
     hamming_x = np.hamming(shape_x) * amplitude
     hamming_y = np.hamming(shape_y) * amplitude
-    hamming_z = np.hamming(shape_y) * amplitude
+    hamming_z = np.hamming(shape_z) * amplitude
 
     # Create a 3D Hamming filter by broadcasting
     hamming_3d = hamming_x[:, None, None] * hamming_y[None, :, None] * hamming_z[None, None, :]
 
     # Compute normalized distance and apply cutoff ratio in-place
-    center_x, center_y, center_z = shape_x // 2, shape_y // 2, shape_y // 2
+    center_x, center_y, center_z = shape_x // 2, shape_y // 2, shape_z // 2
     max_distance = np.sqrt(center_x**2 + center_y**2 + center_z**2)
     for x in range(shape_x):
         for y in range(shape_y):
-            for z in range(shape_y):
+            for z in range(shape_z):
                 distance = np.sqrt((x - center_x)**2 + (y - center_y)**2 + (z - center_z)**2)
                 if distance / max_distance > cutoff_ratio:
                     hamming_3d[x, y, z] = 0
