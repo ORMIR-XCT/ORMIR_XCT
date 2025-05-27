@@ -232,7 +232,7 @@ class TestITKFileConverter(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm:
             file_read(self.test_nii_temp, os.path.join(self.test_dir, "invalid.txt"))
 
-        self.assertEqual(cm.exception.code, 1, "Invalid file input was not catched")
+        self.assertEqual(cm.exception.code, 1, "Invalid file output was not catched")
 
         
     
