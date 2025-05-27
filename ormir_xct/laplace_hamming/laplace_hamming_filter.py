@@ -8,7 +8,7 @@ from scipy.fft import fftshift
 from scipy.fft import fftn, ifftn
 
 
-def image_read(input_image, segmentation=False, write_path=None):
+def image_read(input_image, segmentation=False, write_path=None, low_threshold = 1170, up_threshold = 10000):
     """
     Reads an input image and calls respective filter and segmentation functions.
 
@@ -48,7 +48,7 @@ def image_read(input_image, segmentation=False, write_path=None):
     # Runs segmentation of image if true
     if segmentation:
         if write_path:
-            segmentation_laplace_hamming(image, filtered_image_np, write_path)
+            segmentation_laplace_hamming(image, filtered_image_np, write_path, low_threshold, up_threshold)
         else:
             print("Error: No output path was provided.")
             sys.exit(1)
@@ -167,7 +167,7 @@ def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, ham
 
     return final_image_np
 
-def segmentation_laplace_hamming(image, filtered_image_np, write_path):
+def segmentation_laplace_hamming(image, filtered_image_np, write_path, lower_threshold = 1170, upper_threshold = 10000):
     """
     Provides the segmentation of the image and write down the segmented image.
 
@@ -196,7 +196,7 @@ def segmentation_laplace_hamming(image, filtered_image_np, write_path):
     im.SetSpacing(image.GetSpacing())
 
     # Binary thresholding
-    seg = sitk.BinaryThreshold(im, 1170, 10000, 1, 0)
+    seg = sitk.BinaryThreshold(im, lower_threshold, upper_threshold, 1, 0)
     seg_np = sitk.GetArrayFromImage(seg)
 
     # Write the segmented image
