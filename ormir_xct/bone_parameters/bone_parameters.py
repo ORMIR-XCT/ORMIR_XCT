@@ -10,6 +10,12 @@ from ormir_xct.segmentation.ipl_seg import ipl_seg
 from ormir_xct.autocontour.autocontour import autocontour
 from ormir_xct.util.hildebrand_thickness import calc_structure_thickness_statistics
 
+from ormir_xct.util.scanco_rescale import (
+    convert_scanco_to_bmd,
+    convert_linear_attenuation_to_bmd,
+    convert_hu_to_bmd,
+)
+
 def idk(image_path, para):
     if not image_path:
         print("Error: No image path was provided.")
@@ -48,6 +54,8 @@ def idk(image_path, para):
         total_bone_area()
     elif para == 'bone mineral density':
         bone_mineral_density()
+    elif para == 'bone mineral desnity mask':
+        bone_mineral_density_mask()
     else:
         print("Error: Not a valid parameter.")
         sys.exit(1)
@@ -105,8 +113,76 @@ def trabecular_separation(trab_seg, peri_mask, spacing, image):
 def trabecular_number():
     ''
 
+    # The theoretical way to get the value
+
 def total_bone_area():
     ''
 
-def bone_mineral_density():
-    ''
+def bone_mineral_density(image_array, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
+    image_statistics_filter = sitk.StatisticsImageFilter()
+
+    # Now convert to BMD units if needed
+    if image_units == "bmd":
+        # No conversion needed
+        image_statistics_filter.Execute(image_array)
+    elif image_units == "scanco":
+        # Convert from Scanco native units to linear attenuation
+        # Then convert to BMD
+        image_array = convert_scanco_to_bmd(
+            image_array, mu_scaling, rescale_slope, rescale_intercept
+        )
+        image_statistics_filter.Execute(image_array)
+    elif image_units == "attenuation":
+        # Convert to BMD
+        image_array = convert_linear_attenuation_to_bmd(
+            image_array, rescale_slope, rescale_intercept
+        )
+        image_statistics_filter.Execute(image_array)
+    elif image_units == "hu":
+        # Convert from HU to linear attenuation
+        # Then convert to BMD
+        image_array = convert_hu_to_bmd(
+            image_array, mu_water, rescale_slope, rescale_intercept
+        )
+        image_statistics_filter.Execute(image_array)
+    else:
+        print(
+            "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, or HU are accepted."
+        )
+        sys.exit(1)
+
+    return image_statistics_filter
+
+# Might combine with bone mineral density
+def bone_mineral_density_mask(image,mask,image_units,mu_scaling,mu_water,rescale_slope,rescale_intercept,):
+    mean, std = 0, 0
+
+    # No conversion needed if we already have BMD units
+    if image_units == "scanco":
+        # Convert from Scanco native units to linear attenuation. Then convert to BMD.
+        # Convert both the image and background value.
+        image = convert_scanco_to_bmd(
+            image, mu_scaling, rescale_slope, rescale_intercept
+        )
+    elif image_units == "attenuation":
+        # Convert to BMD.
+        # Convert both the image and background value.
+        image = convert_linear_attenuation_to_bmd(
+            image, rescale_slope, rescale_intercept
+        )
+    elif image_units == "hu":
+        # Convert from HU to linear attenuation. Then convert to BMD.
+        # Convert both the image and background value.
+        image = convert_hu_to_bmd(image, mu_water, rescale_slope, rescale_intercept)
+    elif image_units != "bmd":
+        print(
+            "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, or HU are accepted."
+        )
+        sys.exit(1)
+
+    numpy_image = sitk.GetArrayFromImage(image)
+    mask = sitk.GetArrayFromImage(mask)
+    mean = numpy_image[mask > 0].mean()
+    std = numpy_image[mask > 0].std()
+
+    return mean, std
