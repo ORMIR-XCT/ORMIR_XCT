@@ -31,7 +31,7 @@ class TestFileConverter(unittest.TestCase):
 
         self.path = os.getcwd()
         self.parent = os.path.dirname(self.path)
-        self.filepath = os.path.join(self.parent, "data")
+        self.filepath = os.path.join(self.parent, "tests" + os.path.sep + "data")
 
         # Create a temp directory
         self.test_dir = tempfile.mkdtemp()
