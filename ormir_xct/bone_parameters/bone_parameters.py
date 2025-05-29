@@ -58,7 +58,8 @@ def idk(image_path, para, mu_scaling, mu_water, rescale_slope, rescale_intercept
     elif para == 'tba':
         dt = total_bone_area(peri_mask_np, spacing)
     elif para == 'bmd':
-        dt, tb = bone_mineral_density(image_np, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept)
+        # dt, tb = bone_mineral_density(image_np, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept)
+        dt, tb = bone_mineral_density(image, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept)
     elif para == 'bmdmask':
         dt, tb = bone_mineral_density_mask(image, mask, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept)
     else:
@@ -142,45 +143,78 @@ def total_bone_area(peri_mask_np, spacing):
 # Currently bmd uses simpleITK and bmd mask uses numpy 
 # Create a way to ensure they both use the same method
 # Might just call external file?
-def bone_mineral_density(image_array, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
-    image_statistics_filter = sitk.StatisticsImageFilter()
+# def bone_mineral_density(image_array, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
+#     image_statistics_filter = sitk.StatisticsImageFilter()
 
+#     # Now convert to BMD units if needed
+#     if image_units == "bmd":
+#         # No conversion needed
+#         image = sitk.GetImageFromArray(image_array)
+#         image_statistics_filter.Execute(image)
+#     elif image_units == "scanco":
+#         # Convert from Scanco native units to linear attenuation
+#         # Then convert to BMD
+#         image_array = convert_scanco_to_bmd(
+#             image_array, mu_scaling, rescale_slope, rescale_intercept
+#         )
+#         image = sitk.GetImageFromArray(image_array)
+#         image_statistics_filter.Execute(image)
+#     elif image_units == "attenuation":
+#         # Convert to BMD
+#         image_array = convert_linear_attenuation_to_bmd(
+#             image_array, rescale_slope, rescale_intercept
+#         )
+#         image = sitk.GetImageFromArray(image_array)
+#         image_statistics_filter.Execute(image)
+#     elif image_units == "hu":
+#         # Convert from HU to linear attenuation
+#         # Then convert to BMD
+#         image_array = convert_hu_to_bmd(
+#             image_array, mu_water, rescale_slope, rescale_intercept
+#         )
+#         image = sitk.GetImageFromArray(image_array)
+#         image_statistics_filter.Execute(image)
+#     else:
+#         print(
+#             "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, or HU are accepted."
+#         )
+#         sys.exit(1)
+
+#     mean = image_statistics_filter.GetMean()
+#     std = image_statistics_filter.GetSigma()
+#     print(f"mean bone mineral density is {mean} +/- {std}")
+
+#     return mean, std
+
+def bone_mineral_density(image, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
+    mean, std = 0, 0
     # Now convert to BMD units if needed
-    if image_units == "bmd":
-        # No conversion needed
-        image = sitk.GetImageFromArray(image_array)
-        image_statistics_filter.Execute(image)
-    elif image_units == "scanco":
-        # Convert from Scanco native units to linear attenuation
-        # Then convert to BMD
-        image_array = convert_scanco_to_bmd(
-            image_array, mu_scaling, rescale_slope, rescale_intercept
+    # No conversion needed if we already have BMD units
+    if image_units == "scanco":
+        # Convert from Scanco native units to linear attenuation. Then convert to BMD.
+        # Convert both the image and background value.
+        image = convert_scanco_to_bmd(
+            image, mu_scaling, rescale_slope, rescale_intercept
         )
-        image = sitk.GetImageFromArray(image_array)
-        image_statistics_filter.Execute(image)
     elif image_units == "attenuation":
-        # Convert to BMD
-        image_array = convert_linear_attenuation_to_bmd(
-            image_array, rescale_slope, rescale_intercept
+        # Convert to BMD.
+        # Convert both the image and background value.
+        image = convert_linear_attenuation_to_bmd(
+            image, rescale_slope, rescale_intercept
         )
-        image = sitk.GetImageFromArray(image_array)
-        image_statistics_filter.Execute(image)
     elif image_units == "hu":
-        # Convert from HU to linear attenuation
-        # Then convert to BMD
-        image_array = convert_hu_to_bmd(
-            image_array, mu_water, rescale_slope, rescale_intercept
-        )
-        image = sitk.GetImageFromArray(image_array)
-        image_statistics_filter.Execute(image)
-    else:
+        # Convert from HU to linear attenuation. Then convert to BMD.
+        # Convert both the image and background value.
+        image = convert_hu_to_bmd(image, mu_water, rescale_slope, rescale_intercept)
+    elif image_units != "bmd":
         print(
             "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, or HU are accepted."
         )
         sys.exit(1)
 
-    mean = image_statistics_filter.GetMean()
-    std = image_statistics_filter.GetSigma()
+    numpy_image = sitk.GetArrayFromImage(image)
+    mean = numpy_image.mean()
+    std = numpy_image.std()
     print(f"mean bone mineral density is {mean} +/- {std}")
 
     return mean, std
@@ -188,7 +222,7 @@ def bone_mineral_density(image_array, image_units, mu_scaling, mu_water, rescale
 # Might combine with bone mineral density
 def bone_mineral_density_mask(image, mask, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
     mean, std = 0, 0
-    image_statistics_filter = sitk.StatisticsImageFilter()
+
     # No conversion needed if we already have BMD units
     if image_units == "scanco":
         # Convert from Scanco native units to linear attenuation. Then convert to BMD.
@@ -214,9 +248,48 @@ def bone_mineral_density_mask(image, mask, image_units, mu_scaling, mu_water, re
 
     numpy_image = sitk.GetArrayFromImage(image)
     mask = sitk.GetArrayFromImage(mask)
-    mean = numpy_image.GetMean()
-    std = numpy_image.GetSigma()
+    mean = numpy_image[mask > 0].mean()
+    std = numpy_image[mask > 0].std()
 
     print(f"mean bone mineral density mask is {mean} +/- {std}")
     
     return mean, std
+
+
+# Might combine with bone mineral density
+# def bone_mineral_density_mask(image, mask, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
+#     mean, std = 0, 0
+#     image_statistics_filter = sitk.StatisticsImageFilter()
+    
+#     # No conversion needed if we already have BMD units
+#     if image_units == "scanco":
+#         # Convert from Scanco native units to linear attenuation. Then convert to BMD.
+#         # Convert both the image and background value.
+#         image = convert_scanco_to_bmd(
+#             image, mu_scaling, rescale_slope, rescale_intercept
+#         )
+#         image_statistics_filter.Execute(image)
+#     elif image_units == "attenuation":
+#         # Convert to BMD.
+#         # Convert both the image and background value.
+#         image = convert_linear_attenuation_to_bmd(
+#             image, rescale_slope, rescale_intercept
+#         )
+#         image_statistics_filter.Execute(image)
+#     elif image_units == "hu":
+#         # Convert from HU to linear attenuation. Then convert to BMD.
+#         # Convert both the image and background value.
+#         image = convert_hu_to_bmd(image, mu_water, rescale_slope, rescale_intercept)
+#         image_statistics_filter.Execute(image)
+#     elif image_units != "bmd":
+#         print(
+#             "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, or HU are accepted."
+#         )
+#         sys.exit(1)
+
+#     mean = image_statistics_filter.GetMean()
+#     std = image_statistics_filter.GetSigma()
+
+#     print(f"mean bone mineral density mask is {mean} +/- {std}")
+    
+#     return mean, std
