@@ -16,7 +16,23 @@ from ormir_xct.util.scanco_rescale import (
     convert_hu_to_bmd,
 )
 
-def idk(image_path, para, mu_scaling, mu_water, rescale_slope, rescale_intercept, image_units, mask):
+def trab_peri_array(image, spacing, mu_water, rescale_slope, rescale_intercept):
+    # Use standard threshold values in HU
+    trab_seg = ipl_seg(image, 
+                        1170, 10000, 
+                        value_in_range=1,
+                        voxel_size=spacing[0]
+                        )
+
+    # Generate the periosteal and endosteal segmentations
+    dst_mask, prx_mask, peri_mask = autocontour(image, mu_water, rescale_slope, rescale_intercept)
+
+    trab_seg_np = sitk.GetArrayFromImage(trab_seg)
+    peri_mask_np = sitk.GetArrayFromImage(peri_mask)
+
+    return trab_seg, peri_mask, trab_seg_np, peri_mask_np
+
+def idk(image_path, para, mu_scaling, mu_water, rescale_slope, rescale_intercept, image_units = None, mask = None):
     # Figure out what mask??? 
 
     if not image_path:
@@ -28,47 +44,39 @@ def idk(image_path, para, mu_scaling, mu_water, rescale_slope, rescale_intercept
     spacing = image.GetSpacing()
 
     # Use standard threshold values in HU
-    trab_seg = ipl_seg(image, 
-                        1170, 10000, 
-                        value_in_range=1,
-                        voxel_size=spacing[0]
-                        )
+    trab_seg, peri_mask, trab_seg_np, peri_mask_np = trab_peri_array(image, spacing, mu_water, rescale_slope, rescale_intercept)
 
-    # Generate the periosteal and endosteal segmentations
-    _, _, peri_mask = autocontour(image, mu_water, rescale_slope, rescale_intercept)
-
-
-    if para == 'bone volume fraction':
-        bone_volume_fraction(trab_seg, peri_mask)
-    elif para == 'trabecular thickness':
-        trabecular_thickness(trab_seg, spacing, image)
-    elif para == 'trabecular separation':
-        trabecular_separation(trab_seg, peri_mask, spacing, image)
-    elif para == 'trabecular number':
-        trabecular_number(trab_seg, spacing, image)
-    elif para == 'total bone area':
-        total_bone_area(peri_mask, spacing)
-    elif para == 'bone mineral density':
-        bone_mineral_density(image_np, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept)
-    elif para == 'bone mineral desnity mask':
-        bone_mineral_density_mask(image,mask,image_units,mu_scaling,mu_water,rescale_slope,rescale_intercept)
+    tb = None
+    if para == 'bv':
+        dt = bone_volume_fraction(trab_seg_np, peri_mask_np)
+    elif para == 'tb.th':
+        dt, tb = trabecular_thickness(trab_seg_np, spacing, image)
+    elif para == 'tb.sp':
+        dt, tb = trabecular_separation(trab_seg, peri_mask, spacing, image)
+    elif para == 'tb.n':
+        dt, tb = trabecular_number(trab_seg_np, spacing, image)
+    elif para == 'tba':
+        dt = total_bone_area(peri_mask_np, spacing)
+    elif para == 'bmd':
+        dt, tb = bone_mineral_density(image_np, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept)
+    elif para == 'bmdmask':
+        dt, tb = bone_mineral_density_mask(image, mask, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept)
     else:
         print("Error: Not a valid parameter.")
         sys.exit(1)
 
-def bone_volume_fraction(trab_seg, peri_mask):
-    trab_seg_np = sitk.GetArrayFromImage(trab_seg)
-    peri_mask_np = sitk.GetArrayFromImage(peri_mask)
+    if tb:
+        return dt, tb
+    else:
+        return dt
 
+def bone_volume_fraction(trab_seg_np, peri_mask_np):
     bvtv = (trab_seg_np > 0).sum() / (peri_mask_np > 0).sum()
     print(f"BV/TV = {bvtv}")
-    print()
 
     return bvtv
 
-def trabecular_thickness(trab_seg, spacing, image):
-    trab_seg_np = sitk.GetArrayFromImage(trab_seg)
-
+def trabecular_thickness(trab_seg_np, spacing, image):
     thickness_stats = calc_structure_thickness_statistics(
         trab_seg_np, tuple(spacing), 0, oversample=False, skeletonize=False
     )
@@ -82,7 +90,7 @@ def trabecular_thickness(trab_seg, spacing, image):
     dt.SetSpacing(image.GetSpacing())
     dt.SetDirection(image.GetDirection())
 
-    return dt
+    return dt, thickness_stats
 
 def trabecular_separation(trab_seg, peri_mask, spacing, image):
     trab_seg_inv = 1 - trab_seg
@@ -96,18 +104,15 @@ def trabecular_separation(trab_seg, peri_mask, spacing, image):
 
     print(f"mean separation is {thickness_stats[0]} +/- {thickness_stats[1]}")
     print(f"max separation is {thickness_stats[3]}")
-    print()
 
     dt = sitk.GetImageFromArray(thickness_stats[4])
     dt.SetOrigin(image.GetOrigin())
     dt.SetSpacing(image.GetSpacing())
     dt.SetDirection(image.GetDirection())
 
-    return dt
+    return dt, thickness_stats
 
-def trabecular_number(trab_seg, spacing, image):
-    trab_seg_np = sitk.GetArrayFromImage(trab_seg)
-
+def trabecular_number(trab_seg_np, spacing, image):
     # Skeletonize the trabecular bone segmentation 
     thickness_stats = calc_structure_thickness_statistics(
         trab_seg_np, tuple(spacing), 0, oversample=False, skeletonize=True
@@ -119,18 +124,15 @@ def trabecular_number(trab_seg, spacing, image):
     tb_n = 1 / mean_spacing
 
     print(f"Trabecular Number (Tb.N) = {tb_n}")
-    print(f"Mean spacing between ridges = {mean_spacing}")
-    print()
 
     dt = sitk.GetImageFromArray(thickness_stats[4])
     dt.SetOrigin(image.GetOrigin())
     dt.SetSpacing(image.GetSpacing())
     dt.SetDirection(image.GetDirection())
 
-    return dt
+    return dt, thickness_stats
 
-def total_bone_area(peri_mask, spacing):
-    peri_mask_np = sitk.GetArrayFromImage(peri_mask)
+def total_bone_area(peri_mask_np, spacing):
     pixel_area = spacing[0] * spacing[1]
     
     total_area = (peri_mask_np > 0).sum() * pixel_area
@@ -146,6 +148,8 @@ def bone_mineral_density(image_array, image_units, mu_scaling, mu_water, rescale
     # Now convert to BMD units if needed
     if image_units == "bmd":
         # No conversion needed
+        image = sitk.GetImageFromArray(image_array)
+        image_statistics_filter.Execute(image)
         image_statistics_filter.Execute(image_array)
     elif image_units == "scanco":
         # Convert from Scanco native units to linear attenuation
@@ -153,20 +157,23 @@ def bone_mineral_density(image_array, image_units, mu_scaling, mu_water, rescale
         image_array = convert_scanco_to_bmd(
             image_array, mu_scaling, rescale_slope, rescale_intercept
         )
-        image_statistics_filter.Execute(image_array)
+        image = sitk.GetImageFromArray(image_array)
+        image_statistics_filter.Execute(image)
     elif image_units == "attenuation":
         # Convert to BMD
         image_array = convert_linear_attenuation_to_bmd(
             image_array, rescale_slope, rescale_intercept
         )
-        image_statistics_filter.Execute(image_array)
+        image = sitk.GetImageFromArray(image_array)
+        image_statistics_filter.Execute(image)
     elif image_units == "hu":
         # Convert from HU to linear attenuation
         # Then convert to BMD
         image_array = convert_hu_to_bmd(
             image_array, mu_water, rescale_slope, rescale_intercept
         )
-        image_statistics_filter.Execute(image_array)
+        image = sitk.GetImageFromArray(image_array)
+        image_statistics_filter.Execute(image)
     else:
         print(
             "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, or HU are accepted."
@@ -175,10 +182,12 @@ def bone_mineral_density(image_array, image_units, mu_scaling, mu_water, rescale
 
     mean = image_statistics_filter.GetMean()
     std = image_statistics_filter.GetSigma()
+    print(f"mean bone mineral density is {mean} +/- {std}")
+
     return mean, std
 
 # Might combine with bone mineral density
-def bone_mineral_density_mask(image,mask,image_units,mu_scaling,mu_water,rescale_slope,rescale_intercept):
+def bone_mineral_density_mask(image, mask, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
     mean, std = 0, 0
 
     # No conversion needed if we already have BMD units
@@ -209,4 +218,6 @@ def bone_mineral_density_mask(image,mask,image_units,mu_scaling,mu_water,rescale
     mean = numpy_image[mask > 0].mean()
     std = numpy_image[mask > 0].std()
 
+    print(f"mean bone mineral density mask is {mean} +/- {std}")
+    
     return mean, std
