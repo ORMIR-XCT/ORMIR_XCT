@@ -10,7 +10,7 @@ Description: Test BMD calculation.
 import unittest
 import numpy as np
 import SimpleITK as sitk
-from ormir_xct.bone_mineral_density.bmd import bmd
+from ormir_xct.bone_parameters.bmd import bmd
 from ormir_xct.util.scanco_rescale import (
     convert_scanco_to_bmd,
     convert_linear_attenuation_to_bmd,
