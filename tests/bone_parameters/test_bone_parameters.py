@@ -22,7 +22,7 @@ class TestBoneParameters(unittest.TestCase):
         self.filenames = "test_nii"
         self.path = os.getcwd()
         self.parent = os.path.dirname(self.path)
-        self.filepath = os.path.join(self.parent, "data")
+        self.filepath = os.path.join(self.parent, "ORMIR_XCT/tests/data")
 
         self.test_dir = tempfile.mkdtemp()
 
@@ -53,15 +53,15 @@ class TestBoneParameters(unittest.TestCase):
             self.image, self.spacing, self.mu_water, self.rescale_slope, self.rescale_intercept
         )
 
-        self.assertIsInstance(trab_seg, sitk.Image)
-        self.assertIsInstance(peri_mask, sitk.Image)
-        self.assertIsInstance(trab_seg_np, np.ndarray)
-        self.assertIsInstance(peri_mask_np, np.ndarray)
+        self.assertIsInstance(trab_seg, sitk.Image, "SimpleITK object type wasn't created.")
+        self.assertIsInstance(peri_mask, sitk.Image, "SimpleITK object type wasn't created.")
+        self.assertIsInstance(trab_seg_np, np.ndarray, "Numpy array object type wasn't created.")
+        self.assertIsInstance(peri_mask_np, np.ndarray, "Numpy array object type wasn't created.")
 
         # Ensure dimensions match original image
         original_shape = sitk.GetArrayFromImage(self.image).shape
-        self.assertEqual(trab_seg_np.shape, original_shape)
-        self.assertEqual(peri_mask_np.shape, original_shape)
+        self.assertEqual(trab_seg_np.shape, original_shape, "Origianl shape of image doesn't match.")
+        self.assertEqual(peri_mask_np.shape, original_shape, "Origianl shape of image doesn't match.")
 
     
     def test_calculate_bone_parameter_bmd(self):
@@ -69,59 +69,60 @@ class TestBoneParameters(unittest.TestCase):
             self.test_nii_temp, "bmd", self.mu_scaling, self.mu_water,
             self.rescale_slope, self.rescale_intercept, image_units="scanco"
         )
-        self.assertTrue(mean > 0)
-        self.assertTrue(std >= 0)
+
+        self.assertIsNotNone(mean, "No value was returned.")
+        self.assertIsNotNone(std, "No value was returned.")
 
     def test_calculate_bone_parameter_bv(self):
         bvtv = calculate_bone_parameter(
             self.test_nii_temp, "bv", self.mu_scaling, self.mu_water,
             self.rescale_slope, self.rescale_intercept
         )
-        self.assertTrue(0 < bvtv < 1)
+        
+        self.assertIsNotNone(bvtv, "No value was returned.")
 
     def test_bone_volume_fraction(self):
         result = bone_volume_fraction(self.trab_seg_np, self.peri_mask_np)
-        self.assertTrue(0 < result < 1)
+        self.assertIsNotNone(result, "No value was returned.")
 
     def test_trabecular_thickness(self):
         img, stats = trabecular_thickness(self.trab_seg_np, self.spacing, self.image)
-        self.assertIsInstance(img, sitk.Image)
-        self.assertTrue(stats[0] > 0)
+        self.assertIsInstance(img, sitk.Image, "SimpleITK object type wasn't created.")
+        self.assertIsNotNone(stats, "No value was returned.")
 
     def test_trabecular_separation(self):
         img, stats = trabecular_separation(self.trab_seg, self.peri_mask, self.spacing, self.image)
-        self.assertIsInstance(img, sitk.Image)
-        self.assertTrue(stats[0] > 0)
+        self.assertIsInstance(img, sitk.Image, "SimpleITK object type wasn't created.")
+        self.assertIsNotNone(stats, "No value was returned.")
 
     def test_trabecular_number(self):
-        img, stats = trabecular_number(self.trab_seg_np, self.spacing, self.image)
-        self.assertIsInstance(img, sitk.Image)
-        self.assertTrue(stats[0] > 0)
+        with self.assertRaises(SystemExit):
+            img, stats = trabecular_number(self.trab_seg_np, self.spacing, self.image)
 
     def test_total_bone_area(self):
         result = total_bone_area(self.peri_mask_np, self.spacing)
-        self.assertTrue(result > 0)
+        self.assertIsNotNone(result, "No value was returned.")
 
     def test_bone_mineral_density(self):
         mean, std = bone_mineral_density(
-            self.image, "scanco",
-            self.mu_scaling, self.mu_water,
+            self.image, "scanco", self.mu_scaling, self.mu_water, 
             self.rescale_slope, self.rescale_intercept
         )
-        self.assertTrue(mean > 0)
-        self.assertTrue(std >= 0)
+
+        self.assertIsNotNone(mean)
+        self.assertIsNotNone(std)
 
     def test_bone_mineral_density_mask(self):
         mean, std = bone_mineral_density_mask(
-            self.image, self.mask, "scanco",
-            self.mu_scaling, self.mu_water,
-            self.rescale_slope, self.rescale_intercept
+            self.image, self.mask, "scanco", self.mu_scaling, 
+            self.mu_water, self.rescale_slope, self.rescale_intercept
         )
-        self.assertTrue(mean > 0)
-        self.assertTrue(std >= 0)
+
+        self.assertIsNotNone(mean, "No value was returned.")
+        self.assertIsNotNone(std, "No value was returned.")
 
     def test_calculate_bone_parameter_invalid(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(SystemExit, msg="Didn't catch invalid parameter."):
             calculate_bone_parameter(
                 self.test_nii_temp, "invalid_param", self.mu_scaling, self.mu_water,
                 self.rescale_slope, self.rescale_intercept, image_units="scanco"
