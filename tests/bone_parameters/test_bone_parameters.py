@@ -14,7 +14,8 @@ from ormir_xct.bone_parameters.bone_parameters import (
     trabecular_number,
     total_bone_area,
     bone_mineral_density,
-    bone_mineral_density_mask
+    bone_mineral_density_mask,
+    image_units_converter
 )
 
 class TestBoneParameters(unittest.TestCase):
@@ -104,19 +105,13 @@ class TestBoneParameters(unittest.TestCase):
         self.assertIsNotNone(result, "No value was returned.")
 
     def test_bone_mineral_density(self):
-        mean, std = bone_mineral_density(
-            self.image, "scanco", self.mu_scaling, self.mu_water, 
-            self.rescale_slope, self.rescale_intercept
-        )
+        mean, std = bone_mineral_density(self.image)
 
         self.assertIsNotNone(mean)
         self.assertIsNotNone(std)
 
     def test_bone_mineral_density_mask(self):
-        mean, std = bone_mineral_density_mask(
-            self.image, self.mask, "scanco", self.mu_scaling, 
-            self.mu_water, self.rescale_slope, self.rescale_intercept
-        )
+        mean, std = bone_mineral_density_mask(self.image, self.mask)
 
         self.assertIsNotNone(mean, "No value was returned.")
         self.assertIsNotNone(std, "No value was returned.")
