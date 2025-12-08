@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ormir-xct"
+dynamic = ["version", "dependencies"]
+description = "A Python package for HR-pQCT image processing"
+license = {file = "LICENSE"}
+readme = "README.md"
+authors = [
+    {name = "Michael T. Kuczynski", email = "mkuczyns@ucalgary.ca"},
+]
+keywords = ["ORMIR", "ORMIR_XCT", "HR-pQCT"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3"
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "hypothesis",
+    "pytest",
+    "ruff"
+]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"
+tag_regex = r"^v?(?P<version>\d+\.\d+\.\d+)$"
+
+[project.urls]
+"Download" = "https://github.com/ORMIR-XCT/ORMIR_XCT/releases"
+"Source"   = "https://github.com/ORMIR-XCT/ORMIR_XCT"
+"Homepage" = "https://github.com/ORMIR-XCT"

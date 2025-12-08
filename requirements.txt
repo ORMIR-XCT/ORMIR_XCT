@@ -1,26 +1,12 @@
-# Internal tools
-black
-flake8
-hypothesis
-pbr
-pip
-pytest
-setuptools
-
-# Image processing
+# Runtime dependencies
 itk
 itk-ioscanco
 itkwidgets
-ormir-xct
-scikit-image
-SimpleITK
-vtk
-
-# Numerics
+notebook
 numpy
 numba
 pandas
 scipy
-
-# Jupiter Notebooks
-notebook
+scikit-image
+SimpleITK
+vtk
