@@ -63,7 +63,7 @@ jobs:
       - name: Create env and install dependencies and ormir_xct
         run: |
           # Force osx-64 packages on Apple Silicon
-          CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip
+          CONDA_SUBDIR=osx-64 conda create -y -n ormir_xct python=3.11.11 pip git
           conda activate ormir_xct
           conda env config vars set CONDA_SUBDIR=osx-64
           conda deactivate
