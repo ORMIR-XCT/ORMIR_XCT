@@ -15,14 +15,14 @@
 
 ## Installation
 ### Option A: Install into a new Anaconda environment:
-<ins>***For Windows, Linux, and Intel-based Mac:***</ins>
+***For Windows, Linux, and Intel-based Mac:***
 #### Step 1: Install the ormir_xct Anaconda environment from the YAML file:
 `conda env create -f environment.yml`
 
 #### Step 2: Activate and use the ormir_xct environment:
-`conda activate ormir_xct`<br><br>
+`conda activate ormir_xct`  
 
-<ins>***For Apple Silicon Mac (M-chips):***</ins>
+***For Apple Silicon Mac (M-chips):***
 #### Step 1: Install the ormir_xct Anaconda environment, specifying macOS architecture:
 
 `CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip`
@@ -34,12 +34,11 @@
 `conda env config vars set CONDA_SUBDIR=osx-64`
 
 #### Step 4: Deactivate and reactivate the environment:
-`conda deactivate`<br>
+`conda deactivate`  
 `conda activate ormir_xct`
 
 #### Step 5: Install the required dependencies using pip:
-`pip install -r requirements.txt`
-<br><br>
+`pip install -r requirements.txt`  
 
 ### Option B: Install into an existing Anaconda environment: 
 #### Step 1: Activate your environment:
