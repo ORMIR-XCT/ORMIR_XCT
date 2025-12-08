@@ -30,6 +30,11 @@ dev = [
     "ruff"
 ]
 
+[project.urls]
+"Download" = "https://github.com/ORMIR-XCT/ORMIR_XCT/releases"
+"Source"   = "https://github.com/ORMIR-XCT/ORMIR_XCT"
+"Homepage" = "https://github.com/ORMIR-XCT"
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
@@ -43,7 +48,35 @@ version_scheme = "guess-next-dev"
 local_scheme = "node-and-date"
 tag_regex      = "^v?(?P<version>\\d+\\.\\d+\\.\\d+)$"
 
-[project.urls]
-"Download" = "https://github.com/ORMIR-XCT/ORMIR_XCT/releases"
-"Source"   = "https://github.com/ORMIR-XCT/ORMIR_XCT"
-"Homepage" = "https://github.com/ORMIR-XCT"
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+
+select = [
+    "E",   # PEP8 errors
+    "F",   # pyflakes (undefined, unused)
+    "W",   # warnings
+    "I",   # import sorting
+    "B",   # real bug patterns
+    "UP",  # modern Python usage
+]
+
+extend-exclude = [
+    ".git",
+    ".gitignore",
+    "__pycache__",
+    "docs",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+ignore = [
+    "E203",  # needed for Black compatibility
+    "E501",  # line length
+    "W503",  # line breaks before binary operators
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]

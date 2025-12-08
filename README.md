@@ -2,7 +2,7 @@
 
 [Michael T. Kuczynski](https://www.linkedin.com/in/mkuczyns/), [Nathan J. Neeteson](https://www.linkedin.com/in/nathan-neeteson/), [Kathryn S. Stok](https://www.linkedin.com/in/kstok/), [Andrew J. Burghardt](https://www.linkedin.com/in/aburghardt/), [Michelle A. Espinosa Hernandez](https://www.linkedin.com/in/michelleaespinosah/), [Jared Vicory](https://www.kitware.com/jared-vicory/), [Justin J. Tse](https://www.linkedin.com/in/justin-j-tse/), [Pholpat Durongbhan](https://www.linkedin.com/in/pholpatd/), [Serena Bonaretti](https://sbonaretti.github.io/), [Andy Kin On Wong](https://www.linkedin.com/in/andy-kin-on-wong-76408859/), [Steven K. Boyd](https://mccaig.ucalgary.ca/boyd), [Sarah L. Manske](https://www.linkedin.com/in/sarah-manske-b5402b41/). *ORMIR_XCT: A Python package for high resolution peripheral quantitative computed tomography image processing*. Journal of Open Source Software, 9(97), 6084, https://doi.org/10.21105/joss.06084, 2024.
 
-**Version:** 1.0.2
+**Version:** 1.1.0
 
 - ORMIR_XCT is a Python package for processing high resolution peripheral computed tomography (HR-pQCT) scans. 
 - Development of this project began during the 2022 “Building the Jupyter Community in Musculoskeletal Imaging Research” workshop hosted by the Open and Reproducible Musculoskeletal Imaging Research (ORMIR) group.
@@ -58,7 +58,11 @@ Example Jupyter Notebooks demonstrating the major functionality of the ORMIR_XCT
 ### Reporting Bugs
 - Bugs can be reported by creating a new GitHub issue in this repository. For each bug, please provide details on how to reproduce the bug and the specific error message (if possible).
 
-### Contributing New Features
+### Contributing Guidelines
+- Install `ormir_xct` with development tools (e.g. black, ruff, pytest, hypothesis):
+    1. Clone the repository
+    2. Create an Anaconda environment as above
+    3. Install development tools: `pip install -e .[dev]`
 - To add a new feature, expand existing functionality, add documentation, or other contributions, please submit a new GitHub issue outlining your contribution in detail. 
 - When submitting a new pull request, ensure you outline what you have changed and why it is necessary to make this change.
 
