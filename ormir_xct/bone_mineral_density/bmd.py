@@ -37,7 +37,7 @@ from ormir_xct.util.file_reader import file_reader
 
 
 def bmd(
-    image_array, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept
+    image, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept
 ):
     """
     Compute bone mineral density (BMD) from the intensity information of the
@@ -46,7 +46,7 @@ def bmd(
 
     Parameters
     ----------
-    image_array : numpy array
+    image : SimpleITK.Image
 
     image_units : string
 
@@ -62,40 +62,35 @@ def bmd(
     -------
     image_statistics_filter : SimpleITK.StatisticsImageFilter
     """
-    image_statistics_filter = sitk.StatisticsImageFilter()
+    mean, std = 0, 0
 
-    # Now convert to BMD units if needed
-    if image_units == "bmd":
-        # No conversion needed
-        image_statistics_filter.Execute(image_array)
-    elif image_units == "scanco":
-        # Convert from Scanco native units to linear attenuation
-        # Then convert to BMD
-        image_array = convert_scanco_to_bmd(
-            image_array, mu_scaling, rescale_slope, rescale_intercept
+    # No conversion needed if we already have BMD units
+    if image_units == "scanco":
+        # Convert from Scanco native units to linear attenuation. Then convert to BMD.
+        # Convert both the image and background value.
+        image = convert_scanco_to_bmd(
+            image, mu_scaling, rescale_slope, rescale_intercept
         )
-        image_statistics_filter.Execute(image_array)
     elif image_units == "attenuation":
-        # Convert to BMD
-        image_array = convert_linear_attenuation_to_bmd(
-            image_array, rescale_slope, rescale_intercept
+        # Convert to BMD.
+        # Convert both the image and background value.
+        image = convert_linear_attenuation_to_bmd(
+            image, rescale_slope, rescale_intercept
         )
-        image_statistics_filter.Execute(image_array)
     elif image_units == "hu":
-        # Convert from HU to linear attenuation
-        # Then convert to BMD
-        image_array = convert_hu_to_bmd(
-            image_array, mu_water, rescale_slope, rescale_intercept
-        )
-        image_statistics_filter.Execute(image_array)
-    else:
+        # Convert from HU to linear attenuation. Then convert to BMD.
+        # Convert both the image and background value.
+        image = convert_hu_to_bmd(image, mu_water, rescale_slope, rescale_intercept)
+    elif image_units != "bmd":
         print(
             "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, or HU are accepted."
         )
         sys.exit(1)
 
-    mean = image_statistics_filter.GetMean()
-    std = image_statistics_filter.GetSigma()
+    numpy_image = sitk.GetArrayFromImage(image)
+    mean = numpy_image.mean()
+    std = numpy_image.std()
+
     return mean, std
 
 
