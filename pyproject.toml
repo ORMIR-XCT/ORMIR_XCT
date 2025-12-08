@@ -35,7 +35,7 @@ dependencies = {file = ["requirements.txt"]}
 [tool.setuptools_scm]
 version_scheme = "guess-next-dev"
 local_scheme = "node-and-date"
-tag_regex = r"^v?(?P<version>\d+\.\d+\.\d+)$"
+tag_regex      = "^v?(?P<version>\\d+\\.\\d+\\.\\d+)$"
 
 [project.urls]
 "Download" = "https://github.com/ORMIR-XCT/ORMIR_XCT/releases"
