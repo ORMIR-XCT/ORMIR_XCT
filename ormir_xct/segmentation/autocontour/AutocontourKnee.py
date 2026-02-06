@@ -489,7 +489,7 @@ class AutocontourKnee:
         # img_segmented = self._get_largest_connected_component(img_segmented)
 
         # dilation
-        # !!!NOTE: I'm using a Euclidean metric for the structirng element,
+        # !!!NOTE: I'm using a Euclidean metric for the structuring element,
         # the IPL implementation uses the 3-4-5 chamfer metric. Feel free to
         # swap out the code if you can figure out how to get the 3-4-5
         # chamfer metric in SimpleITK

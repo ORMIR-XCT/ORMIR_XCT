@@ -2,7 +2,7 @@ import os
 import argparse
 import SimpleITK as sitk
 
-from ormir_xct.autocontour.AutocontourKnee import AutocontourKnee
+from ormir_xct.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 from ormir_xct.util.scanco_rescale import convert_hu_to_bmd
 
 

@@ -1,59 +1,14 @@
-import scipy
 import SimpleITK as sitk
 import numpy as np
-import os
-import sys
+
+# No longer needed:
+# import scipy
+# import os
+# import sys
 
 from scipy.fft import fftshift
 from scipy.fft import fftn, ifftn
 
-
-def image_read(input_image, segmentation=False, write_path=None, low_threshold = 1170, up_threshold = 10000):
-    """
-    Reads an input image and calls respective filter and segmentation functions.
-
-    Parameters
-    ----------
-    input_image : string
-        Path to the input image
-    
-    segmentation : boolean
-        Checks if user wants segmentation of image
-    
-    write_path: string
-        Path to the segmented image
-    
-    Returns
-    -------
-    filtered_image_np : array
-        The result of applying the FFT Laplace Hamming filter.
-
-    """
-
-    # Extract directory, filename, basename, and extensions from the input image
-    _, input_filename = os.path.split(input_image)
-    _, input_extension = os.path.splitext(input_filename)
-
-    # Calls file reader function
-    if not (os.path.isfile(input_image) and (".nii" in input_extension.lower())):
-        print()
-        print("Error: input file extension must be nii.")
-        sys.exit(1)
-    
-    image = sitk.ReadImage(input_image)
-    image_np= sitk.GetArrayFromImage(image)
-    
-    filtered_image_np = fft_laplace_hamming(image_np)
-
-    # Runs segmentation of image if true
-    if segmentation:
-        if write_path:
-            segmentation_laplace_hamming(image, filtered_image_np, write_path, low_threshold, up_threshold)
-        else:
-            print("Error: No output path was provided.")
-            sys.exit(1)
-    
-    return filtered_image_np
 
 def compute_laplacian_filter(shape):
     """
@@ -76,6 +31,7 @@ def compute_laplacian_filter(shape):
     kz = np.fft.fftfreq(shape[2])[None, None, :]
     laplacian_filter = -(kx**2 + ky**2 + kz**2)
     return laplacian_filter
+
 
 def apply_hamming_window(frequency_domain, cutoff_ratio, amplitude):
     """Apply a 3D Hamming window in the frequency domain with specified cutoff and amplitude.
@@ -125,6 +81,8 @@ def apply_hamming_window(frequency_domain, cutoff_ratio, amplitude):
     frequency_domain *= hamming_3d
     return frequency_domain
 
+
+
 def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, hamming_amp=1.0):
     """
     Apply FFT Laplace Hamming filter for segmentation based on zero crossing of second derivative.
@@ -166,6 +124,8 @@ def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, ham
     final_image_np = (1 - laplace_epsilon) * image_np + curvature_image_np
 
     return final_image_np
+
+
 
 def segmentation_laplace_hamming(image, filtered_image_np, write_path, lower_threshold = 1170, upper_threshold = 10000):
     """
