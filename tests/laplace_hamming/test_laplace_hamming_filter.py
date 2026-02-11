@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from ormir_xct.laplace_hamming.laplace_hamming_filter import image_read, fft_laplace_hamming, segmentation_laplace_hamming
+from ormir_xct.segmentation import image_read, fft_laplace_hamming, segmentation_laplace_hamming
 
 class TestLaplaceHammingFilter(unittest.TestCase):
 

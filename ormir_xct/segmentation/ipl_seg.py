@@ -40,8 +40,8 @@ threshold_dict = {
     "Per1000_Upper": 1000.0,
 }
 
-
-def ipl_seg(
+# gauss_seg / ipl_seg
+def gauss_seg(
     input_image,
     lower_threshold,
     upper_threshold,

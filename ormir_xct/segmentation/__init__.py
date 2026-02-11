@@ -1,7 +1,7 @@
 # __init__.py
 
 # Defining a public interface for the segmentation subpackage
-from .ipl_seg import ipl_seg
+from .ipl_seg import gauss_seg
 from .laplace_hamming_filter import fft_laplace_hamming
 from .autocontour import autocontour, autocontour_gobj, AutocontourKnee
 

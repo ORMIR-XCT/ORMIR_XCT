@@ -14,7 +14,7 @@ import unittest
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.autocontour.autocontour import autocontour
+from ormir_xct.segmentation import autocontour
 
 
 class TestAutocontour(unittest.TestCase):
