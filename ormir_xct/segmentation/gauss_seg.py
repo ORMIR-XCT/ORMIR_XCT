@@ -1,5 +1,5 @@
 """
-ipl_seg.py
+gauss_seg.py
 
 Created by:   Michael Kuczynski
 Created on:   June 29, 2022
@@ -77,9 +77,10 @@ def gauss_seg(
     return seg
 
 
+# Entry method for running this as a primary script
 def main():
     parser = argparse.ArgumentParser(
-        prog="ipl_seg",
+        prog="gauss_seg",
         description="""
         Binarize an input image following the standard segmentation protocol 
         performed in IPL (Scanco). This is roughly equivalent to the IPL 
@@ -128,9 +129,10 @@ def main():
 
     # Read in image as a 32-bit float so that we can rescale correctly if needed
     input_image = sitk.ReadImage(input_image_path, sitk.sitkFloat32)
-    seg = ipl_seg(input_image, lower_threshold, upper_threshold)
+    seg = gauss_seg(input_image, lower_threshold, upper_threshold)
     sitk.WriteImage(seg, output_image_path)
 
 
+# Entry point for running this as a primary script
 if __name__ == "__main__":
     main()

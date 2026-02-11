@@ -13,6 +13,7 @@ from ormir_xct.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 from ormir_xct.util.scanco_rescale import convert_hu_to_bmd
 
 
+# We may wish to move this to a shared module within the autocontour package so autocontour.py can access it
 def _ensure_image(img, precision=None):
     """
     Helper function to ensure string paths are converted to sitk.Image before processing

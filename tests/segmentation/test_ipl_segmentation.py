@@ -12,7 +12,7 @@ import unittest
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.segmentation.ipl_seg import ipl_seg
+from ormir_xct.segmentation.gauss_seg import ipl_seg
 
 
 def create_sphere_mask(shape, voxel_width, radius):

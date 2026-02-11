@@ -4,7 +4,7 @@ IPL segmentation methods implemented in Python
 
 ## Modules
 
-**ipl_seg**
+**gauss_seg**
 Implementation of the IPL standard segmentation script in Python.
 
 Equivalent to `ipl> gauss_seg`
