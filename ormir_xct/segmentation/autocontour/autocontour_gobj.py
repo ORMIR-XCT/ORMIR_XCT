@@ -13,19 +13,7 @@ from ormir_xct.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 from ormir_xct.util.scanco_rescale import convert_hu_to_bmd
 
 
-# We may wish to move this to a shared module within the autocontour package so autocontour.py can access it
-def _ensure_image(img, precision=None):
-    """
-    Helper function to ensure string paths are converted to sitk.Image before processing
-    
-    :param img: Either a string path to an sitk readable image or an sitk.Image
-    :param precision: Provide read type for added precision
-    """
 
-    if isinstance(img, str):
-        return sitk.ReadImage(img, precision) if precision else sitk.ReadImage(img)
-    else:
-        return sitk.Cast(img, precision) if precision else img
 
 def autocontour_gobj(img, dst_gobj, prx_gobj):
     """
@@ -71,43 +59,3 @@ def autocontour_gobj(img, dst_gobj, prx_gobj):
 
     return dst_mask, prx_mask, mask
 
-
-
-def main():
-    # Parse input arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("image_path", type=str, help="Image (path + filename)")
-    parser.add_argument(
-        "dst_gobj_path",
-        type=str,
-        help="Distal contour from UCT_EVALUATION (path + filename)",
-    )
-    parser.add_argument(
-        "prx_gobj_path",
-        type=str,
-        help="Proximal contour from UCT_EVALUATION (path + filename)",
-    )
-    args = parser.parse_args()
-
-    image_path = args.image_path
-    dst_gobj_path = args.dst_gobj_path
-    prx_gobj_path = args.prx_gobj_path
-
-    # Create a new folder to hold the output images
-    image_dir = os.path.dirname(image_path)
-    basename = os.path.splitext(os.path.basename(image_path))[0]
-
-    prx_mask_path = os.path.join(image_dir, basename + "_PRX_MASK.nii")
-    dst_mask_path = os.path.join(image_dir, basename + "_DST_MASK.nii")
-    mask_path = os.path.join(image_dir, basename + "_MASK.nii")
-
-    dst_mask, prx_mask, mask = autocontour_gobj(image_path, dst_gobj_path, prx_gobj_path)
-    
-    sitk.WriteImage(dst_mask, dst_mask_path)
-    sitk.WriteImage(prx_mask, prx_mask_path)
-    sitk.WriteImage(mask, mask_path)
-    
-
-
-if __name__ == "__main__":
-    main()

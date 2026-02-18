@@ -2,7 +2,8 @@ import argparse
 import SimpleITK as sitk
 
 # file_reader?
-from ormir_xct.microarchitecture.bone_mineral_density.bmd import bmd, file_reader
+from ormir_xct.microarchitecture.bone_mineral_density.bmd import bmd
+from ormir_xct.util.file_reader import file_reader
 
 def main():
     # Parse input arguments

@@ -1,7 +1,8 @@
 import argparse
 import SimpleITK as sitk
 
-from ormir_xct.microarchitecture.bone_mineral_density.bmd_masked import file_reader, bmd_masked
+from ormir_xct.microarchitecture.bone_mineral_density.bmd_masked import bmd_masked
+from ormir_xct.util.file_reader import file_reader
 
 
 def main():
