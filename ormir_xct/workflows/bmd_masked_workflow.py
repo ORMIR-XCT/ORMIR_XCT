@@ -57,6 +57,7 @@ def main():
     rescale_slope = args.rescale_slope
     rescale_intercept = args.rescale_intercept
 
+    # no need for verify_image since this must be a path
     image = file_reader(image_path)
     mask = sitk.ReadImage(image_mask_path)
 
@@ -69,8 +70,8 @@ def main():
         rescale_slope,
         rescale_intercept,
     )
-    print(mean)
-    print(std)
+    print(f"mean: {mean}")
+    print(f"std: {std}")
 
 
 if __name__ == "__main__":

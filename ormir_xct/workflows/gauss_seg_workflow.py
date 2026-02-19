@@ -60,6 +60,8 @@ def main():
     # Read in image as a 32-bit float so that we can rescale correctly if needed
     input_image = sitk.ReadImage(input_image_path, sitk.sitkFloat32)
     seg = gauss_seg(input_image, lower_threshold, upper_threshold)
+
+    print(f"Writing segementation to {output_image_path}")
     sitk.WriteImage(seg, output_image_path)
 
 

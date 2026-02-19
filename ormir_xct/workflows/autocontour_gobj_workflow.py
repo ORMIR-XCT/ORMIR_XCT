@@ -35,9 +35,16 @@ def main():
 
     dst_mask, prx_mask, mask = autocontour_gobj(image_path, dst_gobj_path, prx_gobj_path)
     
-    sitk.WriteImage(dst_mask, dst_mask_path)
-    sitk.WriteImage(prx_mask, prx_mask_path)
+
+    print(f"Writing mask to {mask_path}")
     sitk.WriteImage(mask, mask_path)
+
+    print(f"Writing proximal mask to {prx_mask_path}")
+    sitk.WriteImage(prx_mask, prx_mask_path)
+    
+    print(f"Writing distal mask to {dst_mask_path}")
+    sitk.WriteImage(dst_mask, dst_mask_path)
+    
     
 
 

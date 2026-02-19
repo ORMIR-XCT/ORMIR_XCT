@@ -56,10 +56,12 @@ def main():
     image = file_reader(image_path)
 
     # Get the image stats
-    stats = bmd(
+    mean, std = bmd(
         image, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept
     )
-    print(stats)
+
+    print(f"mean: {mean}")
+    print(f"std: {std}")
 
 
 if __name__ == "__main__":
