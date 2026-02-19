@@ -27,7 +27,7 @@ import SimpleITK as sitk
 from ormir_xct.util.scanco_rescale import *
 
 # Default threshold values used in IPL
-threshold_dict = {
+thresholds = {
     "HU_Lower": 1170.0,
     "HU_Upper": 10000.0,
     "BMD_Lower": 446.8,
@@ -39,6 +39,15 @@ threshold_dict = {
     "Per1000_Lower": 130.0,
     "Per1000_Upper": 1000.0,
 }
+
+threshold_dict = { 
+    "bmd": (thresholds["BMD_Lower"], thresholds["BMD_Upper"]),
+    "scanco": (thresholds["Native_Lower"], thresholds["Native_Upper"]),
+    "attenuation": (thresholds["LinAtt_Lower"], thresholds["LinAtt_Upper"]),
+    "hu": (thresholds["HU_Lower"], thresholds["HU_Upper"]),
+    "per1000": (thresholds["Per1000_Lower"], thresholds["Per1000_Upper"])
+}
+
 
 # gauss_seg / ipl_seg
 def gauss_seg(

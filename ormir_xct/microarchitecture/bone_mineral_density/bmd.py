@@ -62,6 +62,9 @@ def bmd(
     -------
     image_statistics_filter : SimpleITK.StatisticsImageFilter
     """
+
+    # TODO: Incorrect method docstring return?
+
     mean, std = 0, 0
 
     # No conversion needed if we already have BMD units

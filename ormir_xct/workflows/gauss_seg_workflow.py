@@ -36,26 +36,14 @@ def main():
     output_image_path = args.output_image
     image_units = (args.image_units).lower()
 
-    if image_units == "bmd":
-        lower_threshold = threshold_dict.get("BMD_Lower")
-        upper_threshold = threshold_dict.get("BMD_Upper")
-    elif image_units == "scanco":
-        lower_threshold = threshold_dict.get("Native_Lower")
-        upper_threshold = threshold_dict.get("Native_Upper")
-    elif image_units == "attenuation":
-        lower_threshold = threshold_dict.get("LinAtt_Lower")
-        upper_threshold = threshold_dict.get("LinAtt_Upper")
-    elif image_units == "hu":
-        lower_threshold = threshold_dict.get("HU_Lower")
-        upper_threshold = threshold_dict.get("HU_Upper")
-    elif image_units == "per1000":
-        lower_threshold = threshold_dict.get("Per1000_Lower")
-        upper_threshold = threshold_dict.get("Per1000_Upper")
-    else:
+    if image_units not in threshold_dict.keys():
         print(
             "ERROR: Invalid image units provided. Only BMD, SCANCO, ATTENUATION, HU, or PER1000 are accepted."
         )
         sys.exit(1)
+    else:
+        lower_threshold, upper_threshold = threshold_dict[image_units]
+        
 
     # Read in image as a 32-bit float so that we can rescale correctly if needed
     input_image = sitk.ReadImage(input_image_path, sitk.sitkFloat32)
