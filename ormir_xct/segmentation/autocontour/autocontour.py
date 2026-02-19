@@ -5,10 +5,26 @@ import SimpleITK as sitk
 from ormir_xct.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 from ormir_xct.util.scanco_rescale import convert_hu_to_bmd
 
+from ormir_xct.util.file_reader import verify_image
 
 def autocontour(
     img, mu_water=0.2409, rescale_slope=1603.51904, rescale_intercept=-391.209015
 ):
+    """Script for calculating periosteal masks using the autocontour workflow
+    
+    Parameters
+    ----------
+    - img : str
+        str path or SimpleITK image of bones
+    
+    Returns
+    ----------
+    - return_values  : tuple
+        dst_mask, prx_mask, mask
+    """
+
+    img = verify_image(img, sitk.sitkFloat32)
+
     # Mu_Water, Rescale_Slope, and Rescale_Intercept are hard coded
     # To-Do: get directly from the image, if possible, or from the user
     img = convert_hu_to_bmd(img, mu_water, rescale_slope, rescale_intercept)

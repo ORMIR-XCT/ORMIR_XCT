@@ -12,23 +12,34 @@ import SimpleITK as sitk
 from ormir_xct.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 from ormir_xct.util.scanco_rescale import convert_hu_to_bmd
 
+from ormir_xct.util.file_reader import verify_image
+
 
 
 
 def autocontour_gobj(img, dst_gobj, prx_gobj):
-    """
-    Script for calculating periosteal masks using distal and proximal GOBJ masks. 
+    """Script for calculating periosteal masks using distal and proximal GOBJ masks. 
     A variant of autocontour for when bones are too close to distinguish between distal and proximal.
     
-    :param img: str path to or image of bones
-    :param dst_gobj: str path to or image of distal mask
-    :param prx_gobj: str path to or image of proximal mask
+    Parameters
+    ----------
+    - img : str or SimpleITK.Image
+        str path or SimpleITK image of bones
+    - dst_gobj: str or SimpleITK.Image
+        str path or SimpleITK image of distal mask
+    - prx_gobj: satr or SimpleITK.Image
+        str path or SimpleITK image of proximal mask
+        
+    Returns
+    ----------
+    - return_values  : tuple
+        dst_mask, prx_mask, mask
     """
     
     # Read in images as floats to increase precision
-    img = _ensure_image(img, sitk.sitkFloat32)
-    dst_gobj = _ensure_image(dst_gobj)
-    prx_gobj = _ensure_image(prx_gobj)
+    img = verify_image(img, sitk.sitkFloat32)
+    dst_gobj = verify_image(dst_gobj)
+    prx_gobj = verify_image(prx_gobj)
 
     # Mu_Water, Rescale_Slope, and Rescale_Intercept are hard coded
     # To-Do: get directly from the image, if possible, or from the user
