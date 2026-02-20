@@ -9,6 +9,7 @@ import numpy as np
 from scipy.fft import fftshift
 from scipy.fft import fftn, ifftn
 
+from ormir_xct.util.file_reader import verify_image
 
 def compute_laplacian_filter(shape):
     """
@@ -89,8 +90,8 @@ def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, ham
     
     Parameters
     ----------
-    - image_path : string
-        Path to the 3D CT image file.
+    - image_np : array
+        The numpy array of input image
     - laplace_epsilon : float 
         Weight of the curvature image; higher values result in more edge-enhancement.
     - lp_cut_off_freq : float  
