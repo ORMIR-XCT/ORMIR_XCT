@@ -6,7 +6,6 @@ from ormir_xct.segmentation.fft_laplace import fft_laplace_hamming, segmentation
 from ormir_xct.util.file_reader import verify_image
 
 
-# TODO: implement fft_laplace workflow
 
 def main():
     parser = argparse.ArgumentParser(
