@@ -32,7 +32,7 @@ def main():
     else:
         segmented_image_np = segmentation_laplace_hamming(image, filtered_image_np, args.output_path)
     
-
+    print(f"Writing segmentation to {args.output_path}")
     return segmented_image_np
 
 

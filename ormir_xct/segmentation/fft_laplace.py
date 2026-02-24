@@ -128,9 +128,9 @@ def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, ham
 
 
 
-def segmentation_laplace_hamming(image, filtered_image_np, write_path, lower_threshold = 1170, upper_threshold = 10000):
+def segmentation_laplace_hamming(image, filtered_image_np, write_path = None, lower_threshold = 1170, upper_threshold = 10000):
     """
-    Provides the segmentation of the image and write down the segmented image.
+    Provides the segmentation of the image and write down the segmented image if write_path is provided.
 
     Parameters
     ----------
@@ -140,7 +140,7 @@ def segmentation_laplace_hamming(image, filtered_image_np, write_path, lower_thr
     filtered_image_np : array
        The result of applying the FFT Laplace Hamming filter.
     
-    write_path: string
+    write_path: string or None
         Path to write the segmented image
     
     Returns
@@ -160,6 +160,8 @@ def segmentation_laplace_hamming(image, filtered_image_np, write_path, lower_thr
     seg = sitk.BinaryThreshold(im, lower_threshold, upper_threshold, 1, 0)
     seg_np = sitk.GetArrayFromImage(seg)
 
-    # Write the segmented image
-    sitk.WriteImage(seg, write_path)
+    # Write the segmented image if path provided
+    if write_path:
+        sitk.WriteImage(seg, write_path)
+    
     return seg_np
