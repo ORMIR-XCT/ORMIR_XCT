@@ -9,8 +9,6 @@ import numpy as np
 from scipy.fft import fftshift
 from scipy.fft import fftn, ifftn
 
-from ormir_xct.util.file_reader import verify_image
-
 def compute_laplacian_filter(shape):
     """
     Compute the Laplacian filter in the frequency domain for edge enhancement.
@@ -145,8 +143,8 @@ def segmentation_laplace_hamming(image, filtered_image_np, write_path = None, lo
     
     Returns
     -------
-    seg_np : array
-        Segmented image array
+    seg : SimpleITK object
+        Segmented image
 
     """
 
@@ -158,10 +156,10 @@ def segmentation_laplace_hamming(image, filtered_image_np, write_path = None, lo
 
     # Binary thresholding
     seg = sitk.BinaryThreshold(im, lower_threshold, upper_threshold, 1, 0)
-    seg_np = sitk.GetArrayFromImage(seg)
+    # seg_np = sitk.GetArrayFromImage(seg)
 
     # Write the segmented image if path provided
     if write_path:
         sitk.WriteImage(seg, write_path)
     
-    return seg_np
+    return seg
