@@ -1,13 +1,7 @@
 import SimpleITK as sitk
 import numpy as np
 
-# No longer needed:
-# import scipy
-# import os
-# import sys
-
-from scipy.fft import fftshift
-from scipy.fft import fftn, ifftn
+from ormir_xct.util.file_reader import verify_image
 
 def compute_laplacian_filter(shape):
     """
@@ -84,7 +78,7 @@ def apply_hamming_window(frequency_domain, cutoff_ratio, amplitude):
 
 def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, hamming_amp=1.0):
     """
-    Apply FFT Laplace Hamming filter for segmentation based on zero crossing of second derivative.
+    Apply FFT Laplace Hamming filter on given image array in preparation for segmentation based on zero crossing of second derivative.
     
     Parameters
     ----------
@@ -126,27 +120,35 @@ def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, ham
 
 
 
-def segmentation_laplace_hamming(image, filtered_image_np, write_path = None, lower_threshold = 1170, upper_threshold = 10000):
+def segmentation_laplace_hamming(image, write_path = None, lower_threshold = 1170, upper_threshold = 10000):
     """
     Provides the segmentation of the image and write down the segmented image if write_path is provided.
 
     Parameters
     ----------
-    image : SimpleITK object
-        SimpleITK image object
+    image : SimpleITK.Image or str
+        SimpleITK image object of input or string path to input image
     
-    filtered_image_np : array
-       The result of applying the FFT Laplace Hamming filter.
+    write_path: str or None, default: None
+        Path to write the segmented image. Will not write output if no path is given.
     
-    write_path: string or None
-        Path to write the segmented image
+    lower_threshold: int, default: 1170
+        Lower threshold for segmentation
     
+    upper_threshold: int, default: 10000
+        Upper threshold for segmentation
+
     Returns
     -------
-    seg : SimpleITK object
+    seg : SimpleITK.Image
         Segmented image
 
     """
+    # Handles string paths to input image
+    image = verify_image(image)
+
+    # Obtain filtered image 
+    filtered_image_np = fft_laplace_hamming(sitk.GetArrayFromImage(image))
 
     # Setup image object
     im = sitk.GetImageFromArray(filtered_image_np)
