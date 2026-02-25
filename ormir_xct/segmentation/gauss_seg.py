@@ -25,6 +25,7 @@ import argparse
 import SimpleITK as sitk
 
 from ormir_xct.util.scanco_rescale import *
+from ormir_xct.util.file_reader import verify_image
 
 # Default threshold values used in IPL
 thresholds = {
@@ -49,27 +50,31 @@ threshold_dict = {
 }
 
 
-# gauss_seg / ipl_seg
+# gauss_seg formerly ipl_seg
 def gauss_seg(
     input_image,
     lower_threshold,
     upper_threshold,
     value_in_range=127,
+    value_outside_range=0,
     voxel_size=0.0606964,
     sigma=0.5,
 ):
     """
-    Check the image units and get the correct thresholds.
+    Performs gaussian smoothing and binary threshold.
 
     Parameters
     ----------
-    input_image : SimpleITK.Image
+    input_image : SimpleITK.Image or str
+        Image to smooth and threshold. Also accepts string path to input image.
 
     lower_threshold : int
 
     upper_threshold : int
 
     value_in_range : int
+
+    value_outside_range : int
 
     voxel_size : float
 
@@ -79,9 +84,13 @@ def gauss_seg(
     -------
     seg : SimpleITK.Image
     """
+
+    # Handle string paths
+    input_image = verify_image(input_image)
+
     smooth = sitk.SmoothingRecursiveGaussian(input_image, sigma * voxel_size)
     seg = sitk.BinaryThreshold(
-        smooth, lower_threshold, upper_threshold, value_in_range, 0
+        smooth, lower_threshold, upper_threshold, value_in_range, value_outside_range
     )
     return seg
 
