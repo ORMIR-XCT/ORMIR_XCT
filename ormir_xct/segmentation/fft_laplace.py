@@ -9,12 +9,12 @@ def compute_laplacian_filter(shape):
 
     Parameters
     ----------
-    shape : array
+    shape : np.ndarray
         Numpy array of frequency domain shape 
 
     Returns
     -------
-    laplacian_filter : array
+    laplacian_filter : np.ndarray
         Laplacian filter in the frequency domain
     """
 
@@ -31,17 +31,18 @@ def apply_hamming_window(frequency_domain, cutoff_ratio, amplitude):
     
     Parameters
     ----------
-    - frequency_domain : array
+    - frequency_domain : np.ndarray
         Frequency domain
 
     - cutoff_ratio : float 
         Low-pass cutoff frequency of the Hamming filter.
+
     - amplitude : float
         Amplitude of the Hamming filter.
     
     Returns
     ----------
-    - frequency_domain  : array
+    - frequency_domain  : np.ndarray
         Frequency domain
 
     """
@@ -82,18 +83,21 @@ def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, ham
     
     Parameters
     ----------
-    - image_np : array
+    - image_np : np.ndarray
         The numpy array of input image
+
     - laplace_epsilon : float 
         Weight of the curvature image; higher values result in more edge-enhancement.
+
     - lp_cut_off_freq : float  
         Low-pass cutoff frequency of the Hamming filter.
+
     - hamming_amp : float 
         Amplitude of the Hamming filter.
     
     Returns
     ----------
-    - filtered_image_np : array
+    - filtered_image_np : np.ndarray
         The result of applying the FFT Laplace Hamming filter.
     """
 
@@ -126,8 +130,8 @@ def segmentation_laplace_hamming(image, write_path = None, lower_threshold = 117
 
     Parameters
     ----------
-    image : SimpleITK.Image or str
-        SimpleITK image object of input or string path to input image
+    image : sitk.Image or str
+        sitk image object of input or string path to input image
     
     write_path: str or None, default: None
         Path to write the segmented image. Will not write output if no path is given.
@@ -140,7 +144,7 @@ def segmentation_laplace_hamming(image, write_path = None, lower_threshold = 117
 
     Returns
     -------
-    seg : SimpleITK.Image
+    seg : sitk.Image
         Segmented image
 
     """

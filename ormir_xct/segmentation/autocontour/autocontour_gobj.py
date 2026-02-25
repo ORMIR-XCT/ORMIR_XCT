@@ -23,17 +23,19 @@ def autocontour_gobj(img, dst_gobj, prx_gobj):
     
     Parameters
     ----------
-    - img : str or SimpleITK.Image
-        str path or SimpleITK image of bones
-    - dst_gobj: str or SimpleITK.Image
-        str path or SimpleITK image of distal mask
-    - prx_gobj: satr or SimpleITK.Image
-        str path or SimpleITK image of proximal mask
+    - img : str or sitk.Image
+        str path or sitk image of bones
+
+    - dst_gobj: str or sitk.Image
+        str path or sitk image of distal mask
+
+    - prx_gobj: satr or sitk.Image
+        str path or sitk image of proximal mask
         
     Returns
     ----------
-    - return_values  : tuple
-        dst_mask, prx_mask, mask
+    - return_values : tuple
+        contains sitk images of dst_mask, prx_mask, mask 
     """
     
     # Read in images as floats to increase precision

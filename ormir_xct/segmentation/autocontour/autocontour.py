@@ -15,12 +15,12 @@ def autocontour(
     Parameters
     ----------
     - img : str
-        str path or SimpleITK image of bones
+        str path or sitk image of bones
     
     Returns
     ----------
     - return_values  : tuple
-        dst_mask, prx_mask, mask
+        sitk images of dst_mask, prx_mask, mask
     """
 
     img = verify_image(img, sitk.sitkFloat32)
