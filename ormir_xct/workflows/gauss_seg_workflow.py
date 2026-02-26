@@ -8,7 +8,7 @@ from ormir_xct.segmentation.gauss_seg import threshold_dict, gauss_seg
 # Entry method for running this as a primary script
 # Taken from ormir.segmentation.gauss_seg
 
-def main():
+def gauss_seg_workflow():
     parser = argparse.ArgumentParser(
         prog="gauss_seg",
         description="""
@@ -21,6 +21,7 @@ def main():
         (default is set to BMD units).
         """,
     )
+
     parser.add_argument("input_image", type=str, help="The input image")
     parser.add_argument("output_image", type=str, help="The output image")
     parser.add_argument(
@@ -55,4 +56,4 @@ def main():
 
 # Entry point for running this as a primary script
 if __name__ == "__main__":
-    main()
+    gauss_seg_workflow()

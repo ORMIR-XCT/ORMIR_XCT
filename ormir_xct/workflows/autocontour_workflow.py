@@ -6,7 +6,7 @@ import SimpleITK as sitk
 from ormir_xct.segmentation.autocontour import autocontour
 
 
-def main():
+def autocontour_workflow():
     # Parse input arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("image_path", type=str, help="Image (path + filename)")
@@ -14,21 +14,21 @@ def main():
         "mu_water",
         type=float,
         nargs="?",
-        default="0.2409",
+        default=0.2409,
         help="Linear attenuation of water (default = 0.2409)",
     )
     parser.add_argument(
         "rescale_slope",
         type=float,
         nargs="?",
-        default="1603.51904",
+        default=1603.51904,
         help="Slope to scale to BMD (default = 1603.51904)",
     )
     parser.add_argument(
         "rescale_intercept",
         type=float,
         nargs="?",
-        default="-391.209015",
+        default=-391.209015,
         help="Intercept to scale to BMD (default = -391.209015)",
     )
     args = parser.parse_args()
@@ -67,4 +67,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    autocontour_workflow()

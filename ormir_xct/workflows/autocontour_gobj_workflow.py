@@ -5,9 +5,10 @@ import SimpleITK as sitk
 from ormir_xct.segmentation.autocontour import autocontour_gobj
 
 
-def main():
+def autocontour_gobj_workflow():
     # Parse input arguments
     parser = argparse.ArgumentParser()
+
     parser.add_argument("image_path", type=str, help="Image (path + filename)")
     parser.add_argument(
         "dst_gobj_path",
@@ -49,4 +50,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    autocontour_gobj_workflow()

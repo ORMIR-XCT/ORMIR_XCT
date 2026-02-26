@@ -7,7 +7,7 @@ from ormir_xct.util.file_reader import verify_image
 
 
 
-def main():
+def fft_laplace_workflow():
     parser = argparse.ArgumentParser(
         prog="gauss_seg",
         description="""
@@ -22,20 +22,17 @@ def main():
     args = parser.parse_args()
 
     image = verify_image(args.input_image)
-    image_np= sitk.GetArrayFromImage(image)
-
-    filtered_image_np = fft_laplace_hamming(image_np)
 
     # The segmentation_laplace_hamming method writes the segmented image to provided path
     if args.upper and args.lower:
-        segmented_image_np = segmentation_laplace_hamming(image, filtered_image_np, args.output_path, args.lower, args.upper)
+        segmented_image_np = segmentation_laplace_hamming(image, args.output_path, lower_threshold=args.lower, upper_threshold=args.upper)
     else:
-        segmented_image_np = segmentation_laplace_hamming(image, filtered_image_np, args.output_path)
+        segmented_image_np = segmentation_laplace_hamming(image, args.output_path)
     
     print(f"Writing segmentation to {args.output_path}")
     return segmented_image_np
 
 
 if __name__ == "__main__":
-    main()
+    fft_laplace_workflow()
 
