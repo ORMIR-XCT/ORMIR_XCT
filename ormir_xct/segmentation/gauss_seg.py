@@ -88,7 +88,9 @@ def gauss_seg(
     # Handle string paths
     input_image = verify_image(input_image)
 
-    smooth = sitk.SmoothingRecursiveGaussian(input_image, sigma * voxel_size)
+    # [sigma * voxel_size] * 3 produces a List[float] to fit method signature
+    smooth = sitk.SmoothingRecursiveGaussian(input_image, [sigma * voxel_size] * 3)
+
     seg = sitk.BinaryThreshold(
         smooth, lower_threshold, upper_threshold, value_in_range, value_outside_range
     )
