@@ -4,12 +4,14 @@ import SimpleITK as sitk
 
 from scipy import ndimage
 from skimage.filters import gaussian
-from skimage.morphology import ball, cube, remove_small_objects
+from skimage.morphology import ball, remove_small_objects, footprint_rectangle
 from concurrent.futures import ThreadPoolExecutor
 
+from ormir_xct.util.file_reader import verify_image
 
 def compute_minmax_threshold_image(
-    density: np.ndarray, footprint: np.ndarray
+    density: np.ndarray, 
+    footprint: np.ndarray,
 ) -> np.ndarray:
     """
     Calculate the minmax threshold image.
@@ -22,11 +24,13 @@ def compute_minmax_threshold_image(
     footprint : np.ndarray
         The footprint to use for identifying local thresholds.
 
+    
     Returns
     -------
     np.ndarray
         The minmax threshold image.
     """
+
     print("Calculating max image...")
     max_image = ndimage.maximum_filter(density, footprint=footprint)
     print("Calculating min image...")
@@ -36,7 +40,8 @@ def compute_minmax_threshold_image(
 
 
 def compute_mean_threshold_image(
-    density: np.ndarray, footprint: np.ndarray
+    density: np.ndarray, 
+    footprint: np.ndarray,
 ) -> np.ndarray:
     """
     Calculate the mean threshold image.
@@ -49,8 +54,6 @@ def compute_mean_threshold_image(
     footprint : np.ndarray
         The footprint to use for identifying local thresholds.
 
-    silent : bool
-        Whether to suppress terminal output.
 
     Returns
     -------
@@ -102,6 +105,7 @@ def compute_adaptive_local_threshold_segmentation(
         The thresholded image.
     """
     print(f"Calculating threshold image using mode: {mode}")
+
     if mode == "mean":
         threshold_image = compute_mean_threshold_image(density, footprint)
     elif mode == "minmax":
@@ -140,14 +144,56 @@ def adaptive_local_thresholding(
     sigma,
     minimum_structure_size,
 ):
+    """
+    Perform local adaptive thresholding on input image.
+
+    Parameters
+    ----------
+    image_sitk : sitk.Image or str
+        Image to threshold, accepts string paths.
+
+    structuring_element_shape : str
+        Shape of the structuring element, accepts "ball" or "cube".
+    
+    structuring_element_size : int
+        Size of structuring element.
+
+    lower_threshold : float
+        The lower threshold.
+
+    upper_threshold : float
+        The upper threshold.
+
+    local_threshold_method : str
+        The method to use for identifying local thresholds. Accepts "mean", "minmax", or "both"
+
+    sigma : float
+        The sigma to use for the gaussian filter.
+
+    minimum_structure_size : int
+        The minimum size of structures to keep in the segmentation.
+
+    Returns
+    -------
+    sitk.Image
+        The thresholded image.
+    """
+
+    # Handle string paths
+    image_sitk = verify_image(image_sitk)
+
     image = sitk.GetArrayFromImage(image_sitk)
 
     if structuring_element_shape == "ball":
-        footprint = ball(structuring_element_size)
+        footprint = np.asarray(ball(structuring_element_size))
     elif structuring_element_shape == "cube":
-        footprint = cube(structuring_element_size)
+        # cube is depreciated and will be removed. Recommended to use footprint_rectangle instead
+        # using shape (structuring_element_size,) * 3 produces a 3 dimensional cube 
+        footprint = np.asarray(footprint_rectangle((structuring_element_size, ) * 3))
     else:
         raise ValueError("Invalid structuring element shape.")
+    
+
     segmentation = compute_adaptive_local_threshold_segmentation(
         image,
         lower_threshold,
@@ -162,97 +208,3 @@ def adaptive_local_thresholding(
 
     return segmentation_sitk
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Perform adaptive local thresholding on an image to segment bone. You provide an input image "
-        "and lower and upper thresholds and a bone segmentation will be created. Optionally you can "
-        "specify the size and shape of the structuring element used for identifying the local thresholds, "
-        "as well as the minimum structure size to keep in the segmentation. Finally, you can also specify "
-        "whether to base the local thresholds on the mean of local voxels, the average of the min and max "
-        "of local voxels, or the minimum of each of these methods. This method is based on the following "
-        "article: https://doi.org/10.1016/j.bone.2021.116225. ",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    parser.add_argument("input", type=str, help="Input image filename to be segmented.")
-    parser.add_argument("output", type=str, help="Output image filename.")
-    parser.add_argument(
-        "--lower-threshold",
-        "-lt",
-        type=float,
-        default=190,
-        help="Lower threshold for bone segmentation.",
-    )
-    parser.add_argument(
-        "--upper-threshold",
-        "-ut",
-        type=float,
-        default=450,
-        help="Upper threshold for bone segmentation.",
-    )
-    parser.add_argument(
-        "--structuring-element-size",
-        "-sz",
-        type=int,
-        default=6,
-        help="Size of the structuring element used for identifying local thresholds."
-        "If the footprint shape is a ball, this is the radius. If the footprint shape is a cube, "
-        "this is the width.",
-    )
-    parser.add_argument(
-        "--structuring-element-shape",
-        "-sh",
-        type=str,
-        default="ball",
-        choices=["ball", "cube"],
-        help="Shape of the structuring element used for identifying local thresholds.",
-    )
-    parser.add_argument(
-        "--sigma",
-        "-sg",
-        type=float,
-        default=None,
-        help="Sigma for the gaussian filter.",
-    )
-    parser.add_argument(
-        "--minimum-structure-size",
-        "-ms",
-        type=int,
-        default=64,
-        help="Minimum size of structures to keep in the segmentation.",
-    )
-    parser.add_argument(
-        "--local-threshold-method",
-        "-ltm",
-        type=str,
-        default="mean",
-        choices=["mean", "minmax", "both"],
-        help="Method for determining local thresholds. `mean` uses the mean of local voxels. `minmax` uses the "
-        "average of the min and max of local voxels. `both` uses the minimum of both methods.",
-    )
-
-    args = parser.parse_args()
-    input_path = args.input
-    output_path = args.output
-    structuring_element_shape = args.structuring_element_shape
-    structuring_element_size = args.structuring_element_size
-    lower_threshold = args.lower_threshold
-    upper_threshold = args.upper_threshold
-    local_threshold_method = args.local_threshold_method
-    sigma = args.sigma
-    minimum_structure_size = args.minimum_structure_size
-
-    input_img = sitk.ReadImage(input_path, sitk.sitkFloat32)
-
-    output_img = adaptive_local_thresholding(
-        input_img,
-        structuring_element_shape,
-        structuring_element_size,
-        lower_threshold,
-        upper_threshold,
-        local_threshold_method,
-        sigma,
-        minimum_structure_size,
-    )
-
-    sitk.WriteImage(output_img, output_path)
