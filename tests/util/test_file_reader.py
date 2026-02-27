@@ -26,6 +26,9 @@ class TestFileReader(unittest.TestCase):
 
     path = os.getcwd()
     parent = os.path.dirname(path)
+
+
+    parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filepath = os.path.join(parent, "data")
 
     def test_file_read_aim(self):
@@ -65,16 +68,16 @@ class TestFileReader(unittest.TestCase):
         self.assertTrue(os.path.isfile(nrrd_path))
 
         nrrd_image = file_reader(nrrd_path)
-        expected = type(sitk.Image())
-        self.assertEqual(type(nrrd_image), expected)
+        expected = type(sitk.Image)
+        self.assertEqual(type(nrrd_image), sitk.Image)
 
     def test_verify_image_path(self):
         nii_path = os.path.join(self.filepath, self.filenames[2] + ".nii")
         self.assertTrue(os.path.isfile(nii_path))
 
         nii_image = verify_image(nii_path)
-        expected = type(sitk.Image())
-        self.assertEqual(type(nii_image), expected)
+
+        self.assertEqual(type(nii_image), sitk.Image)
 
     def test_verify_image_unchanged(self):
         nii_path = os.path.join(self.filepath, self.filenames[2] + ".nii")
@@ -83,6 +86,6 @@ class TestFileReader(unittest.TestCase):
         expected = sitk.ReadImage(nii_path)
         nii_image = verify_image(expected)
 
-        self.assertEqual(type(nii_image), expected)
+        self.assertEqual(type(nii_image), type(expected))
 
 
