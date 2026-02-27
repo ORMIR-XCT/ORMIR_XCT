@@ -33,7 +33,7 @@ from ormir_xct.util.scanco_rescale import (
     convert_linear_attenuation_to_bmd,
     convert_hu_to_bmd,
 )
-from ormir_xct.util.file_reader import file_reader
+from ormir_xct.util.file_reader import verify_image
 
 
 def bmd(
@@ -66,6 +66,7 @@ def bmd(
     # TODO: Incorrect method docstring return?
 
     mean, std = 0, 0
+    image = verify_image(image)
 
     # No conversion needed if we already have BMD units
     if image_units == "scanco":

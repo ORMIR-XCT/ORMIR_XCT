@@ -11,7 +11,7 @@ import os
 import unittest
 import SimpleITK as sitk
 
-from ormir_xct.util.file_reader import file_reader
+from ormir_xct.util.file_reader import file_reader, verify_image
 
 
 class TestFileReader(unittest.TestCase):
@@ -67,3 +67,22 @@ class TestFileReader(unittest.TestCase):
         nrrd_image = file_reader(nrrd_path)
         expected = type(sitk.Image())
         self.assertEqual(type(nrrd_image), expected)
+
+    def test_verify_image_path(self):
+        nii_path = os.path.join(self.filepath, self.filenames[2] + ".nii")
+        self.assertTrue(os.path.isfile(nii_path))
+
+        nii_image = verify_image(nii_path)
+        expected = type(sitk.Image())
+        self.assertEqual(type(nii_image), expected)
+
+    def test_verify_image_unchanged(self):
+        nii_path = os.path.join(self.filepath, self.filenames[2] + ".nii")
+        self.assertTrue(os.path.isfile(nii_path))
+
+        expected = sitk.ReadImage(nii_path)
+        nii_image = verify_image(expected)
+
+        self.assertEqual(type(nii_image), expected)
+
+

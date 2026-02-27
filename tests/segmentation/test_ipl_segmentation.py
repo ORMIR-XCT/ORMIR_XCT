@@ -11,8 +11,9 @@ import os
 import unittest
 import numpy as np
 import SimpleITK as sitk
+import tempfile
 
-from ormir_xct.segmentation.gauss_seg import ipl_seg
+from ormir_xct.segmentation.gauss_seg import gauss_seg
 
 
 def create_sphere_mask(shape, voxel_width, radius):
@@ -35,14 +36,46 @@ def create_sphere_mask(shape, voxel_width, radius):
 
 
 class TestIPLSegmentation(unittest.TestCase):
-    def test_ipl_segmentation(self):
+    def create_test_image_np(self):
         voxel_width = (1, 1, 1)
         shape = (10, 10, 10)
         radius = 4
-        sphere_array = create_sphere_mask(shape, voxel_width, radius).astype(float)
+        sphere = create_sphere_mask(shape, voxel_width, radius).astype(float)
+
+
+        return sphere
+    
+    def test_gauss_segmentation(self):
+        """Tests gauss_seg with image input"""
+        sphere_array = self.create_test_image_np()
         sphere = sitk.GetImageFromArray(sphere_array)
 
-        result_image = ipl_seg(sphere, 1, 2, 1, 1, 0.01)
+        result_image = gauss_seg(sphere, 1, 2, 1, 1, 0.01)
         result_array = sitk.GetArrayFromImage(result_image).astype(float)
 
         np.testing.assert_array_equal(sphere_array, result_array)
+
+    def test_gauss_segmentation_path_handling(self):
+        """Tests gauss_seg with path input"""
+        # Create a temp directory
+        self.test_dir = tempfile.mkdtemp()
+
+        # Paths for test files
+        # input image path
+        self.test_input_nii = os.path.join(self.test_dir, "gauss_test_input.nii")
+        self.test_output_nii = os.path.join(self.test_dir, "gauss_test_output.nii")
+
+
+        sphere_array = self.create_test_image_np()
+        sitk.WriteImage(sitk.GetImageFromArray(sphere_array), self.test_input_nii)
+
+        result_image = gauss_seg(self.test_input_nii, 1, 2, 1, 1, 0.01)
+        result_array = sitk.GetArrayFromImage(result_image).astype(float)
+
+        np.testing.assert_array_equal(sphere_array, result_array)
+
+
+
+
+
+
