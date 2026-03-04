@@ -35,6 +35,18 @@ dev = [
 "Source"   = "https://github.com/ORMIR-XCT/ORMIR_XCT"
 "Homepage" = "https://github.com/ORMIR-XCT"
 
+[project.scripts]
+autocontour = "ormir_xct.workflows.autocontour_workflow:autocontour_workflow"
+autocontour_gobj = "ormir_xct.workflows.autocontour_gobj_workflow:autocontour_gobj_workflow"
+bmd_masked = "ormir_xct.workflows.bmd_masked_workflow:bmd_masked_workflow"
+bmd = "ormir_xct.workflows.bmd_workflow:bmd_workflow"
+connected_check = "ormir_xct.workflows.connected_check_workflow:connected_check_workflow"
+fft_laplace = "ormir_xct.workflows.fft_laplace_workflow:fft_laplace_workflow"
+gauss_seg = "ormir_xct.workflows.gauss_seg_workflow:gauss_seg_workflow"
+jsw_main = "ormir_xct.workflows.jsw_main_workflow:jsw_main_workflow"
+local_adaptive_threshold = "ormir_xct.workflows.local_adaptive_threshold_workflow:local_adaptive_threshold_workflow"
+
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
