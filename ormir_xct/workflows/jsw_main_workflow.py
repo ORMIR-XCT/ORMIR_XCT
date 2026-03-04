@@ -90,6 +90,6 @@ def jsw_main_workflow():
 
 
 if __name__ == "__main__":
-    # Moved argparsing to workflow method to maintain similar formatting
+    # Moved arg parsing to workflow method to maintain similar formatting
     # Following format used by ORMIR-MIDS
     jsw_main_workflow()

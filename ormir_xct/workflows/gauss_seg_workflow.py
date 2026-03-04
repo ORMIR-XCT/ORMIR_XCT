@@ -50,7 +50,7 @@ def gauss_seg_workflow():
     input_image = sitk.ReadImage(input_image_path, sitk.sitkFloat32)
     seg = gauss_seg(input_image, lower_threshold, upper_threshold)
 
-    print(f"Writing segementation to {output_image_path}")
+    print(f"Writing segmentation to {output_image_path}")
     sitk.WriteImage(seg, output_image_path)
 
 
