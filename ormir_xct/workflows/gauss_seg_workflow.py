@@ -25,7 +25,7 @@ def gauss_seg_workflow():
     parser.add_argument("input_image", type=str, help="The input image")
     parser.add_argument("output_image", type=str, help="The output image")
     parser.add_argument(
-        "image_units",
+        "--image_units",
         type=str,
         nargs="?",
         default="BMD",

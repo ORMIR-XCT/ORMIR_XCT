@@ -13,35 +13,35 @@ def bmd_masked_workflow():
         "image_seg", type=str, help="The input image mask (path + filename)"
     )
     parser.add_argument(
-        "image_units",
+        "--image_units",
         type=str,
         nargs="?",
         default="BMD",
         help="The image voxel units (options: BMD, SCANCO, ATTENUATION, HU)",
     )
     parser.add_argument(
-        "mu_scaling",
+        "--mu_scaling",
         type=int,
         nargs="?",
         default=8192,
         help="The Scanco defined scaling value (usually 8192 or 4096)",
     )
     parser.add_argument(
-        "mu_water",
+        "--mu_water",
         type=float,
         nargs="?",
         default=0.25,
         help="Linear attenuation of water (default = 0.25)",
     )
     parser.add_argument(
-        "rescale_slope",
+        "--rescale_slope",
         type=float,
         nargs="?",
         default=1600.0,
         help="Slope to scale to BMD (default = 1600.0)",
     )
     parser.add_argument(
-        "rescale_intercept",
+        "--rescale_intercept",
         type=float,
         nargs="?",
         default=-390.0,

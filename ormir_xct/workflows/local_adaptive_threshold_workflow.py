@@ -82,14 +82,14 @@ def local_adaptive_threshold_workflow():
         args.structuring_element_shape,
         args.structuring_element_size,
         args.lower_threshold,
-        args.supper_threshold,
+        args.upper_threshold,
         args.local_threshold_method,
         args.sigma,
         args.minimum_structure_size,
     )
 
-    print(f"Writing thresholded image to {args.output_path}.")
-    sitk.WriteImage(output_img, args.output_path)
+    print(f"Writing thresholded image to {args.output}.")
+    sitk.WriteImage(output_img, args.output)
 
     return output_img
 

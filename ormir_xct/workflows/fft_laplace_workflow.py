@@ -16,8 +16,8 @@ def fft_laplace_workflow():
     )
     parser.add_argument("input_image", type=str, help="The input image path")
     parser.add_argument("output_path", type=str, help="The output image")
-    parser.add_argument("upper", type=int, help="Upper threshold", required=False)
-    parser.add_argument("lower", type=int, help="Lower threshold", required=False)
+    parser.add_argument("--upper", type=int, help="Upper threshold")
+    parser.add_argument("--lower", type=int, help="Lower threshold")
 
     args = parser.parse_args()
 
