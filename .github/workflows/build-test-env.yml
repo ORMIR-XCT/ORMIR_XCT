@@ -26,6 +26,11 @@ jobs:
           auto-activate-base: false
           activate-environment: ormir-xct
           environment-file: environment.yml
+      - name: Install ormir-xct
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Check ormir-xct install
       - run: |
           conda info
           conda list
@@ -53,7 +58,7 @@ jobs:
       - name: Install ormir-xct
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -e .
       - name: Check ormir-xct install
         run: |
           conda info
