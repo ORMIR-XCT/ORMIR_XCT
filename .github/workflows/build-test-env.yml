@@ -1,0 +1,68 @@
+# This workflow runs tests for the ormir_xct Python environment
+
+name: Test ormir_xct Python Env on Mac, Linux, Windows
+
+on: [push]
+
+jobs:
+  test-windows-linux:
+    name: Windows and Linux
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "windows-latest"]
+        python-version:: [3.11.11]
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: 3.11.11
+          miniconda-version: 'latest'
+          auto-update-conda: false
+          auto-activate-base: false
+          environment-file: environment.yml
+      - run: |
+          conda info
+          conda list
+          python -c "import itk"
+          python -c "import vtk"
+          python -c "import SimpleITK"
+          
+  test-apple-silicon:
+    name: Apple Silicon
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["macos-15"]
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: 3.11.11
+          miniconda-version: 'latest'
+          auto-update-conda: false
+          auto-activate-base: false
+      - name: Install ormir_xct
+        run: |
+          CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip
+          conda activate ormir_xct
+          conda env config vars set CONDA_SUBDIR=osx-64
+          conda deactivate
+          conda activate ormir_xct
+          pip install -r requirements.txt
+      - name: Check ormir_xct install
+        run: |
+          conda activate ormir_xct
+          conda info
+          conda list
+          python -c "import itk"
+          python -c "import vtk"
+          python -c "import SimpleITK"
