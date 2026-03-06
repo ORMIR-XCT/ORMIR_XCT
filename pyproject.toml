@@ -49,19 +49,19 @@ dev = [
 "Homepage" = "https://github.com/ORMIR-XCT"
 
 [project.scripts]
-autocontour = "ormir-xct.workflows.autocontour_workflow:autocontour_workflow"
-autocontour_gobj = "ormir-xct.workflows.autocontour_gobj_workflow:autocontour_gobj_workflow"
-bmd_masked = "ormir-xct.workflows.bmd_masked_workflow:bmd_masked_workflow"
-bmd = "ormir-xct.workflows.bmd_workflow:bmd_workflow"
-connected_check = "ormir-xct.workflows.connected_check_workflow:connected_check_workflow"
-fft_laplace = "ormir-xct.workflows.fft_laplace_workflow:fft_laplace_workflow"
-gauss_seg = "ormir-xct.workflows.gauss_seg_workflow:gauss_seg_workflow"
-jsw_main = "ormir-xct.workflows.jsw_main_workflow:jsw_main_workflow"
-local_adaptive_threshold = "ormir-xct.workflows.local_adaptive_threshold_workflow:local_adaptive_threshold_workflow"
+autocontour = "ormir_xct.workflows.autocontour_workflow:autocontour_workflow"
+autocontour_gobj = "ormir_xct.workflows.autocontour_gobj_workflow:autocontour_gobj_workflow"
+bmd_masked = "ormir_xct.workflows.bmd_masked_workflow:bmd_masked_workflow"
+bmd = "ormir_xct.workflows.bmd_workflow:bmd_workflow"
+connected_check = "ormir_xct.workflows.connected_check_workflow:connected_check_workflow"
+fft_laplace = "ormir_xct.workflows.fft_laplace_workflow:fft_laplace_workflow"
+gauss_seg = "ormir_xct.workflows.gauss_seg_workflow:gauss_seg_workflow"
+jsw_main = "ormir_xct.workflows.jsw_main_workflow:jsw_main_workflow"
+local_adaptive_threshold = "ormir_xct.workflows.local_adaptive_threshold_workflow:local_adaptive_threshold_workflow"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["ormir-xct*"]
+include = ["ormir_xct*"]
 exclude = ["manuscript*"]
 
 [tool.setuptools_scm]
@@ -72,16 +72,6 @@ tag_regex      = "^v?(?P<version>\\d+\\.\\d+\\.\\d+)$"
 [tool.ruff]
 target-version = "py311"
 line-length = 88
-
-select = [
-    "E",   # PEP8 errors
-    "F",   # pyflakes (undefined, unused)
-    "W",   # warnings
-    "I",   # import sorting
-    "B",   # real bug patterns
-    "UP",  # modern Python usage
-]
-
 extend-exclude = [
     ".git",
     ".gitignore",
@@ -91,8 +81,16 @@ extend-exclude = [
     "dist",
 ]
 
-[tool.ruff.lint]
-lint.ignore = [
+[too.ruff.lint]
+select = [
+    "E",   # PEP8 errors
+    "F",   # pyflakes (undefined, unused)
+    "W",   # warnings
+    "I",   # import sorting
+    "B",   # real bug patterns
+    "UP",  # modern Python usage
+]
+ignore = [
     "E203",  # needed for Black compatibility
     "E501",  # line length
     "W503",  # line breaks before binary operators
