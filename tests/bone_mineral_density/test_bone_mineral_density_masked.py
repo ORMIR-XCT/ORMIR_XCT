@@ -15,7 +15,7 @@ from ormir_xct.util.scanco_rescale import (
     convert_linear_attenuation_to_bmd,
     convert_hu_to_bmd,
 )
-from ormir_xct.bone_mineral_density.bmd_masked import bmd_masked
+from ormir_xct.microarchitecture.bone_mineral_density.bmd_masked import bmd_masked
 
 
 class TestBoneMineralDensityMasked(unittest.TestCase):

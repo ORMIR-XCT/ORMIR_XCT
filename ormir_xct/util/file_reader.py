@@ -58,3 +58,24 @@ def file_reader(input_file_path):
         sys.exit(0)
 
     return image
+
+
+def verify_image(input_image, precision=None):
+    """
+    Provide with string path or sitk.Image. Ensures string paths are converted to sitk.Image before processing. 
+    Avoid using for masks as the file_reader method uses sitk.sitkFloat32 precision.
+
+    Parameters
+    ----------
+    input_image : string path to an sitk readable image or an sitk.Image
+    precision: set precision if desired, None by default
+
+    Returns
+    -------
+    image : SimpleITK.Image
+    """
+
+    if isinstance(input_image, str):
+        return file_reader(input_image)
+    else:
+        return sitk.Cast(input_image, precision) if precision else input_image

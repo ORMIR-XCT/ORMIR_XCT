@@ -29,8 +29,8 @@ class TestFileConverter(unittest.TestCase):
             "test_dicom",
         ]
 
-        self.path = os.getcwd()
-        self.parent = os.path.dirname(self.path)
+        #self.path = os.getcwd()
+        self.parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.filepath = os.path.join(self.parent, "data")
 
         # Create a temp directory
