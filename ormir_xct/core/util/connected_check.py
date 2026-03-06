@@ -1,19 +1,11 @@
-# -----------------------------------------------------
-# connected_check.py
-#
-# Created by:   Michael Kuczynski
-# Created on:   Sept. 09, 2022
-#
-# Description: Uses connected component labelling to check if a joint
-#               segmentation is connected (i.e., JS = 0). This script runs on
-#               all images for the HandOA study.
-#
-# Usage:
-#   python connected_check.py handOA_dir
-# -----------------------------------------------------
+"""
+Created by:   Michael Kuczynski
+Created on:   Sept. 09, 2022
 
-import os
-import argparse
+Description: Uses connected component labelling to check if a joint
+              segmentation is connected (i.e., JS = 0).
+"""
+
 import SimpleITK as sitk
 
 

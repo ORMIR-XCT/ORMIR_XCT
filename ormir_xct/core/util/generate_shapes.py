@@ -9,7 +9,7 @@ import os
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.util.hildebrand_thickness import calc_structure_thickness_statistics
+from ormir_xct.core.util.hildebrand_thickness import calc_structure_thickness_statistics
 
 IMAGE_SHAPE = tuple([25] * 3)  # image size
 VOXEL_WIDTH = tuple([1] * 3)  # spacing 1x1x1 for simplicity

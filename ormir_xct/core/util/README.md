@@ -1,2 +1,2 @@
 # util
-Contains utility functions that are used in the ORMIR_2022 repository.
+Contains utility functions that are used in the ORMIR-XCT repository.

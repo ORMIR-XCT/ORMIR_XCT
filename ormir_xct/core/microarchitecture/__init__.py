@@ -1,3 +1,5 @@
 # __init__.py
+from .bmd import bmd
+from .bmd_masked import bmd_masked
 
-from . import bone_mineral_density
+__all__ = ["bmd", "bmd_masked"]

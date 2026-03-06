@@ -1,11 +1,8 @@
-import os
-import argparse
 import SimpleITK as sitk
 
-from ormir_xct.segmentation.autocontour.AutocontourKnee import AutocontourKnee
-from ormir_xct.util.scanco_rescale import convert_hu_to_bmd
-
-from ormir_xct.util.file_reader import verify_image
+from ormir_xct.core.util.file_reader import verify_image
+from ormir_xct.core.util.hrpqct_rescale import convert_hu_to_bmd
+from ormir_xct.core.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 
 def autocontour(
     img, mu_water=0.2409, rescale_slope=1603.51904, rescale_intercept=-391.209015

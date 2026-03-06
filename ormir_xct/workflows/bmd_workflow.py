@@ -1,64 +1,90 @@
 import argparse
-import SimpleITK as sitk
 
-# file_reader?
-from ormir_xct.microarchitecture.bone_mineral_density.bmd import bmd
-from ormir_xct.util.file_reader import verify_image
+from ormir_xct.core.microarchitecture.bone_mineral_density.bmd import bmd
+from ormir_xct.core.util.file_reader import verify_image
 
-def bmd_workflow():
-    # Parse input arguments
-    parser = argparse.ArgumentParser()
 
-    parser.add_argument("image", type=str, help="The input image (path + filename)")
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="bmd",
+        description="Compute bone mineral density statistics from an input image.",
+    )
+    parser.add_argument("image", type=str, help="Path to the input image")
     parser.add_argument(
-        "--image_units",
+        "--image-units",
         type=str,
-        nargs="?",
         default="BMD",
-        help="The image voxel units (options: BMD, SCANCO, ATTENUATION, HU)",
+        help="Image voxel units: BMD, SCANCO, ATTENUATION, or HU",
     )
     parser.add_argument(
-        "--mu_scaling",
+        "--mu-scaling",
         type=int,
-        nargs="?",
         default=8192,
-        help="The Scanco defined scaling value (usually 8192 or 4096)",
+        help="Scanco scaling value (usually 8192 or 4096)",
     )
     parser.add_argument(
-        "--mu_water",
+        "--mu-water",
         type=float,
-        nargs="?",
         default=0.25,
-        help="Linear attenuation of water",
+        help="Linear attenuation of water (default: 0.25)",
     )
     parser.add_argument(
-        "--rescale_slope",
+        "--rescale-slope",
         type=float,
-        nargs="?",
         default=1600.0,
-        help="Slope to scale to BMD",
+        help="Slope used to rescale to BMD (default: 1600.0)",
     )
     parser.add_argument(
-        "--rescale_intercept",
+        "--rescale-intercept",
         type=float,
-        nargs="?",
         default=-390.0,
-        help="Intercept to scale to BMD",
+        help="Intercept used to rescale to BMD (default: -390.0)",
     )
+    return parser
 
-    args = parser.parse_args()
 
-    image = verify_image(args.image)
+def run(
+    image: str,
+    image_units: str = "BMD",
+    mu_scaling: int = 8192,
+    mu_water: float = 0.25,
+    rescale_slope: float = 1600.0,
+    rescale_intercept: float = -390.0,
+) -> int:
+    input_image = verify_image(image)
 
-    # Get the image stats
     mean, std = bmd(
-        image, args.image_units, args.mu_scaling, args.mu_water, args.rescale_slope, args.rescale_intercept
+        input_image,
+        image_units.lower(),
+        mu_scaling,
+        mu_water,
+        rescale_slope,
+        rescale_intercept,
     )
 
     print("BMD Statistics:")
     print(f"mean: {mean}")
     print(f"std: {std}")
 
+    return 0
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    try:
+        return run(
+            image=args.image,
+            image_units=args.image_units,
+            mu_scaling=args.mu_scaling,
+            mu_water=args.mu_water,
+            rescale_slope=args.rescale_slope,
+            rescale_intercept=args.rescale_intercept,
+        )
+    except Exception as exc:
+        parser.exit(status=1, message=f"Error: {exc}\n")
+
 
 if __name__ == "__main__":
-    bmd_workflow()
+    raise SystemExit(main())

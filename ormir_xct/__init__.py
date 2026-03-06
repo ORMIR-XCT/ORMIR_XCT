@@ -1,6 +1,11 @@
-# init.py
+"""ORMIR-XCT: tools for high-resolution CT image processing."""
+from importlib.metadata import version, PackageNotFoundError
 
-from . import workflows
-from core import segmentation, microarchitecture, joint_space_analysis
+try:
+    __version__ = version("ormir-xct")
+except PackageNotFoundError:
+    __version__ = "unknown"
 
-# consider bringing certain commonly used methods or names directly to the top-level namespace
+from . import core
+
+__all__ = ["core", "__version__"]

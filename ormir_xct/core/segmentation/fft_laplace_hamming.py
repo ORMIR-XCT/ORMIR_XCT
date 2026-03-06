@@ -1,7 +1,18 @@
-import SimpleITK as sitk
-import numpy as np
+"""
+fft_laplace_hamming.py
 
-from ormir_xct.util.file_reader import verify_image
+Created by:   Michael Kuczynski
+Created on:   2024
+
+Description: Implementation of the IPL fft_laplace_hamming function.
+             Smoothing + edge enhancement is performed with a Laplace-Hamming
+             filter, and segmentation is performed with a global threshold.
+"""
+import numpy as np
+import SimpleITK as sitk
+
+from ormir_xct.core.util.file_reader import verify_image
+
 
 def compute_laplacian_filter(shape):
     """
@@ -80,6 +91,7 @@ def apply_hamming_window(frequency_domain, cutoff_ratio, amplitude):
 def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, hamming_amp=1.0):
     """
     Apply FFT Laplace Hamming filter on given image array in preparation for segmentation based on zero crossing of second derivative.
+    Default input parameters are selected based on the paper by Sadoughi, et al. JBMR. 2023: https://doi.org/10.1002%2Fjbmr.4819
     
     Parameters
     ----------
@@ -124,9 +136,12 @@ def fft_laplace_hamming(image_np, laplace_epsilon=0.45, lp_cut_off_freq=0.3, ham
 
 
 
-def segmentation_laplace_hamming(image, write_path = None, lower_threshold = 1170, upper_threshold = 10000):
+def fft_laplace_hamming_seg(image, write_path=None, laplace_epsilon=0.45, lp_cut_off_freq=0.3, hamming_amp=1.0, 
+                            lower_threshold=475, upper_threshold=10000):
     """
     Provides the segmentation of the image and write down the segmented image if write_path is provided.
+    Default input parameters are selected based on the paper by Sadoughi, et al. JBMR. 2023: https://doi.org/10.1002%2Fjbmr.4819
+    It is assumed that the input image is in units of per mille by default.
 
     Parameters
     ----------
@@ -136,7 +151,7 @@ def segmentation_laplace_hamming(image, write_path = None, lower_threshold = 117
     write_path: str or None, default: None
         Path to write the segmented image. Will not write output if no path is given.
     
-    lower_threshold: int, default: 1170
+    lower_threshold: int, default: 475
         Lower threshold for segmentation
     
     upper_threshold: int, default: 10000
@@ -152,7 +167,8 @@ def segmentation_laplace_hamming(image, write_path = None, lower_threshold = 117
     image = verify_image(image)
 
     # Obtain filtered image 
-    filtered_image_np = fft_laplace_hamming(sitk.GetArrayFromImage(image))
+    filtered_image_np = fft_laplace_hamming(sitk.GetArrayFromImage(image), 
+                                            laplace_epsilon, lp_cut_off_freq, hamming_amp)
 
     # Setup image object
     im = sitk.GetImageFromArray(filtered_image_np)
@@ -162,7 +178,6 @@ def segmentation_laplace_hamming(image, write_path = None, lower_threshold = 117
 
     # Binary thresholding
     seg = sitk.BinaryThreshold(im, lower_threshold, upper_threshold, 1, 0)
-    # seg_np = sitk.GetArrayFromImage(seg)
 
     # Write the segmented image if path provided
     if write_path:

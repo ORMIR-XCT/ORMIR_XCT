@@ -29,15 +29,14 @@ Usage:
 """
 
 import sys
-import argparse
 import SimpleITK as sitk
 
-from ormir_xct.util.scanco_rescale import (
-    convert_scanco_to_bmd,
+from ormir_xct.core.util.hrpqct_rescale import (
+    convert_native_to_bmd,
     convert_linear_attenuation_to_bmd,
     convert_hu_to_bmd,
 )
-from ormir_xct.util.file_reader import verify_image
+from ormir_xct.core.util.file_reader import verify_image
 
 
 def bmd_masked(
@@ -83,7 +82,7 @@ def bmd_masked(
     if image_units == "scanco":
         # Convert from Scanco native units to linear attenuation. Then convert to BMD.
         # Convert both the image and background value.
-        image = convert_scanco_to_bmd(
+        image = convert_native_to_bmd(
             image, mu_scaling, rescale_slope, rescale_intercept
         )
     elif image_units == "attenuation":

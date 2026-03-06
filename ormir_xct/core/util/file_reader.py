@@ -8,7 +8,7 @@ import sys
 import itk
 import SimpleITK as sitk
 
-from ormir_xct.util.sitk_itk import itk_sitk
+from ormir_xct.core.util.sitk_itk import itk_sitk
 
 file_extensions = [".nii", ".mha", ".nrrd", ".aim", ".isq"]
 

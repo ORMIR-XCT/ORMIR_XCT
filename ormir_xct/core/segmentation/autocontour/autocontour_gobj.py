@@ -5,16 +5,11 @@ provide the distal and proximal GOBJ masks (as NIFTI or similar) to mask
 out the bone of interest.
 """
 
-import os
-import argparse
 import SimpleITK as sitk
 
-from ormir_xct.segmentation.autocontour.AutocontourKnee import AutocontourKnee
-from ormir_xct.util.scanco_rescale import convert_hu_to_bmd
-
-from ormir_xct.util.file_reader import verify_image
-
-
+from ormir_xct.core.util.file_reader import verify_image
+from ormir_xct.core.util.hrpqct_rescale import convert_hu_to_bmd
+from ormir_xct.core.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 
 
 def autocontour_gobj(img, dst_gobj, prx_gobj):
@@ -69,6 +64,4 @@ def autocontour_gobj(img, dst_gobj, prx_gobj):
     # Create a mask for the entire joint
     mask = prx_mask + dst_mask
 
-
     return dst_mask, prx_mask, mask
-

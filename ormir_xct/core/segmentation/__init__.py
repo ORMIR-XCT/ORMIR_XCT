@@ -1,6 +1,5 @@
 # __init__.py
-
-# for access to modules
-from . import fft_laplace, gauss_seg, autocontour, local_adaptive_threshold
-
-# in the future, consider flattening structure to allow for direct access to key methods
+from .seg_gauss import seg_gauss
+from .fft_laplace_hamming import fft_laplace_hamming, fft_laplace_hamming_seg
+from .adaptive_local_threshold import adaptive_local_thresholding
+from .autocontour import autocontour, autocontour_gobj

@@ -1,8 +1,5 @@
 import SimpleITK as sitk
 
-# import yaml
-
-
 class AutocontourKnee:
     """
     A class for computing the periosteal and endosteal masks for a knee

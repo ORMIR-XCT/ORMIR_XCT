@@ -12,11 +12,8 @@ import datetime
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.joint_space_analysis.connected_check import connected_check
-from ormir_xct.util.hildebrand_thickness import (
-    calc_structure_thickness_statistics,
-    compute_local_thickness_from_mask,
-)
+from ormir_xct.core.util.connected_check import connected_check
+from ormir_xct.core.util.hildebrand_thickness import calc_structure_thickness_statistics
 
 
 # Set standard global variables used in IPL script

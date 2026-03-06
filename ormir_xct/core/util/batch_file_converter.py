@@ -3,7 +3,7 @@ import sys
 import glob
 import argparse
 
-from ormir_xct.util.file_converter import file_converter
+from ormir_xct.core.util.file_converter import file_converter
 
 # Dictionary for valid file extensions
 file_extensions = ["aim", "nii", "mha"]

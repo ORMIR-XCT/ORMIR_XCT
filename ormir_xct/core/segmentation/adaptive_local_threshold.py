@@ -1,4 +1,15 @@
-import argparse
+"""
+Created by: Michael Kuczynski
+Created on: June 9th, 2022
+
+Adapted from the adaptive_local_thresholding.py script from the Bone Imaging Lab at 
+the University of Calgary: https://github.com/Bonelab/Bonelab
+
+Description: Contains functions to obtain joint space
+            segmentation masks using the standard
+            IPL implementation (translated to Python).
+"""
+
 import numpy as np
 import SimpleITK as sitk
 
@@ -7,7 +18,7 @@ from skimage.filters import gaussian
 from skimage.morphology import ball, remove_small_objects, footprint_rectangle
 from concurrent.futures import ThreadPoolExecutor
 
-from ormir_xct.util.file_reader import verify_image
+from ormir_xct.core.util.file_reader import verify_image
 
 def compute_minmax_threshold_image(
     density: np.ndarray, 
@@ -193,7 +204,6 @@ def adaptive_local_thresholding(
     else:
         raise ValueError("Invalid structuring element shape.")
     
-
     segmentation = compute_adaptive_local_threshold_segmentation(
         image,
         lower_threshold,
@@ -207,4 +217,3 @@ def adaptive_local_thresholding(
     segmentation_sitk.CopyInformation(image_sitk)
 
     return segmentation_sitk
-

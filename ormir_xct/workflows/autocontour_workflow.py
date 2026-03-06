@@ -1,60 +1,58 @@
-import argparse
 import os
-
+import argparse
 import SimpleITK as sitk
 
-from ormir_xct.segmentation.autocontour import autocontour
+from ormir_xct.core.segmentation.autocontour import autocontour
 
 
-def autocontour_workflow():
-    # Parse input arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("image_path", type=str, help="Image (path + filename)")
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="autocontour",
+        description="Generate proximal, distal, and combined masks using the autocontour workflow.",
+    )
+    parser.add_argument("image_path", type=str, help="Path to the input image")
     parser.add_argument(
-        "--mu_water",
+        "--mu-water",
         type=float,
-        nargs="?",
         default=0.2409,
-        help="Linear attenuation of water (default = 0.2409)",
+        help="Linear attenuation of water (default: 0.2409)",
     )
     parser.add_argument(
-        "--rescale_slope",
+        "--rescale-slope",
         type=float,
-        nargs="?",
         default=1603.51904,
-        help="Slope to scale to BMD (default = 1603.51904)",
+        help="Slope used to rescale to BMD (default: 1603.51904)",
     )
     parser.add_argument(
-        "--rescale_intercept",
+        "--rescale-intercept",
         type=float,
-        nargs="?",
         default=-391.209015,
-        help="Intercept to scale to BMD (default = -391.209015)",
+        help="Intercept used to rescale to BMD (default: -391.209015)",
     )
-    args = parser.parse_args()
+    return parser
 
-    image_path = args.image_path
-    mu_water = args.mu_water
-    rescale_slope = args.rescale_slope
-    rescale_intercept = args.rescale_intercept
 
-    # Create a new folder to hold the output images
+def run(
+    image_path: str,
+    mu_water: float = 0.2409,
+    rescale_slope: float = 1603.51904,
+    rescale_intercept: float = -391.209015,
+) -> int:
     image_dir = os.path.dirname(image_path)
     basename = os.path.splitext(os.path.basename(image_path))[0]
 
-    prx_mask_path = os.path.join(image_dir, basename + "_PRX_MASK.nii")
-    dst_mask_path = os.path.join(image_dir, basename + "_DST_MASK.nii")
-    mask_path = os.path.join(image_dir, basename + "_MASK.nii")
+    prx_mask_path = os.path.join(image_dir, f"{basename}_PRX_MASK.nii")
+    dst_mask_path = os.path.join(image_dir, f"{basename}_DST_MASK.nii")
+    mask_path = os.path.join(image_dir, f"{basename}_MASK.nii")
 
-    # Read in images as floats to increase precision
     image = sitk.ReadImage(image_path, sitk.sitkFloat32)
 
-    # Run the autocontour method for each bone
-    dst_mask, prx_mask, mask = autocontour(image, 
-                                           mu_water,
-                                           rescale_slope,
-                                           rescale_intercept
-                                           )
+    dst_mask, prx_mask, mask = autocontour(
+        image,
+        mu_water,
+        rescale_slope,
+        rescale_intercept,
+    )
 
     print(f"Writing mask to {mask_path}")
     sitk.WriteImage(mask, mask_path)
@@ -65,6 +63,23 @@ def autocontour_workflow():
     print(f"Writing distal mask to {dst_mask_path}")
     sitk.WriteImage(dst_mask, dst_mask_path)
 
+    return 0
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    try:
+        return run(
+            image_path=args.image_path,
+            mu_water=args.mu_water,
+            rescale_slope=args.rescale_slope,
+            rescale_intercept=args.rescale_intercept,
+        )
+    except Exception as exc:
+        parser.exit(status=1, message=f"Error: {exc}\n")
+
 
 if __name__ == "__main__":
-    autocontour_workflow()
+    raise SystemExit(main())
