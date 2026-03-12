@@ -22,6 +22,7 @@ Outputs:
   1. Joint Space Mask Image (MHA/NIFTI)
   2. Joint Space Output (text file)
 """
+
 import os
 import argparse
 import SimpleITK as sitk
@@ -33,12 +34,15 @@ from ormir_xct.core.joint_space_analysis.jsw_morphometry import (
     jsw_parameters,
 )
 
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="jsw-main",
         description="Reimplementation of the IPL joint space width analysis.",
     )
-    parser.add_argument("joint_seg", type=str, help="Path to the joint segmentation image")
+    parser.add_argument(
+        "joint_seg", type=str, help="Path to the joint segmentation image"
+    )
     parser.add_argument(
         "--voxel-size",
         type=float,
@@ -80,9 +84,7 @@ def run(
         sitk.WriteImage(
             eroded_image, os.path.join(output_path, f"{basename}_ERODE.nii")
         )
-        sitk.WriteImage(
-            js_mask, os.path.join(output_path, f"{basename}_JS_MASK.nii")
-        )
+        sitk.WriteImage(js_mask, os.path.join(output_path, f"{basename}_JS_MASK.nii"))
         sitk.WriteImage(
             dilated_js_mask,
             os.path.join(output_path, f"{basename}_DILATED_JS_MASK.nii"),

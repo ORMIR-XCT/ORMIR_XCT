@@ -2,9 +2,9 @@
 Created by: Nathan Neeteson
 Created on: ??
 
-Description: Utilities for quantitatively comparing 
+Description: Utilities for quantitatively comparing
               predicted and reference segmentations.
-              Loosely adapted from: 
+              Loosely adapted from:
 https://github.com/InsightSoftwareConsortium/SimpleITK-Notebooks/blob/master/Python/34_Segmentation_Evaluation.ipynb
 """
 

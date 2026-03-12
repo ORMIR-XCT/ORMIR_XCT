@@ -14,9 +14,9 @@ Notes:
       the ITK Scanco reader which automatically converts the
       images from Scanco native units to HU.
   2. If using NII/MHA/etc. images as input, they are read in
-      using the SimpleITK reader and you need to know the 
+      using the SimpleITK reader and you need to know the
       units of your image to provide as input.
-  3. Default values are provided for muScaling, muWater, 
+  3. Default values are provided for muScaling, muWater,
       rescaleSlope, and rescaleIntercept, but you should
       try to provide your own values for improved accuracy.
 
@@ -24,6 +24,7 @@ Usage:
   python bmd.py inputImage.nii
   python bmd.py inputImage.AIM HU 8192 0.2396 1613.94397 -392.247009
 """
+
 import sys
 import SimpleITK as sitk
 
@@ -35,9 +36,7 @@ from ormir_xct.core.util.hrpqct_rescale import (
 from ormir_xct.core.util.file_reader import verify_image
 
 
-def bmd(
-    image, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept
-):
+def bmd(image, image_units, mu_scaling, mu_water, rescale_slope, rescale_intercept):
     """
     Compute bone mineral density (BMD) from the intensity information of the
     provided image. The image units need to be provided to convert voxels to
@@ -95,5 +94,3 @@ def bmd(
     std = numpy_image.std()
 
     return mean, std
-
-

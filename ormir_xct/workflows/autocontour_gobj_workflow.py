@@ -4,6 +4,7 @@ import SimpleITK as sitk
 
 from ormir_xct.core.segmentation.autocontour import autocontour_gobj
 
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Generate proximal, distal, and combined masks from GOBJ contours."
@@ -51,6 +52,6 @@ def main() -> int:
     args = parser.parse_args()
     return run(args.image_path, args.dst_gobj_path, args.prx_gobj_path)
 
-    
+
 if __name__ == "__main__":
     raise SystemExit(main())

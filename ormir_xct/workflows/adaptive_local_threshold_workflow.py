@@ -1,7 +1,9 @@
 import argparse
 import SimpleITK as sitk
 
-from ormir_xct.core.segmentation.adaptive_local_threshold import adaptive_local_thresholding
+from ormir_xct.core.segmentation.adaptive_local_threshold import (
+    adaptive_local_thresholding,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:

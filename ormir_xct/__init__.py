@@ -1,4 +1,5 @@
 """ORMIR-XCT: tools for high-resolution CT image processing."""
+
 from importlib.metadata import version, PackageNotFoundError
 
 try:

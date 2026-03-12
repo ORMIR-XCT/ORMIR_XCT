@@ -2,7 +2,7 @@
 Created by: Michael Kuczynski
 Created on: June 9th, 2022
 
-Adapted from the adaptive_local_thresholding.py script from the Bone Imaging Lab at 
+Adapted from the adaptive_local_thresholding.py script from the Bone Imaging Lab at
 the University of Calgary: https://github.com/Bonelab/Bonelab
 
 Description: Contains functions to obtain joint space
@@ -20,8 +20,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 from ormir_xct.core.util.file_reader import verify_image
 
+
 def compute_minmax_threshold_image(
-    density: np.ndarray, 
+    density: np.ndarray,
     footprint: np.ndarray,
 ) -> np.ndarray:
     """
@@ -35,7 +36,7 @@ def compute_minmax_threshold_image(
     footprint : np.ndarray
         The footprint to use for identifying local thresholds.
 
-    
+
     Returns
     -------
     np.ndarray
@@ -51,7 +52,7 @@ def compute_minmax_threshold_image(
 
 
 def compute_mean_threshold_image(
-    density: np.ndarray, 
+    density: np.ndarray,
     footprint: np.ndarray,
 ) -> np.ndarray:
     """
@@ -165,7 +166,7 @@ def adaptive_local_thresholding(
 
     structuring_element_shape : str
         Shape of the structuring element, accepts "ball" or "cube".
-    
+
     structuring_element_size : int
         Size of structuring element.
 
@@ -199,11 +200,11 @@ def adaptive_local_thresholding(
         footprint = np.asarray(ball(structuring_element_size))
     elif structuring_element_shape == "cube":
         # cube is depreciated and will be removed. Recommended to use footprint_rectangle instead
-        # using shape (structuring_element_size,) * 3 produces a 3 dimensional cube 
-        footprint = np.asarray(footprint_rectangle((structuring_element_size, ) * 3))
+        # using shape (structuring_element_size,) * 3 produces a 3 dimensional cube
+        footprint = np.asarray(footprint_rectangle((structuring_element_size,) * 3))
     else:
         raise ValueError("Invalid structuring element shape.")
-    
+
     segmentation = compute_adaptive_local_threshold_segmentation(
         image,
         lower_threshold,

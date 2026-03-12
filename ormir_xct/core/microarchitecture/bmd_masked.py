@@ -17,9 +17,9 @@ Notes:
       the ITK Scanco reader which automatically converts the
       images from Scanco native units to HU.
   3. If using NII/MHA/etc. images as input, they are read in
-      using the SimpleITK reader and you need to know the 
+      using the SimpleITK reader and you need to know the
       units of your image to provide as input.
-  4. Default values are provided for muScaling, muWater, 
+  4. Default values are provided for muScaling, muWater,
       rescaleSlope, and rescaleIntercept, but you should
       try to provide your own values for improved accuracy.
 
@@ -77,7 +77,7 @@ def bmd_masked(
     mean, std = 0, 0
 
     image = verify_image(image)
-    
+
     # No conversion needed if we already have BMD units
     if image_units == "scanco":
         # Convert from Scanco native units to linear attenuation. Then convert to BMD.
@@ -107,4 +107,3 @@ def bmd_masked(
     std = numpy_image[mask > 0].std()
 
     return mean, std
-

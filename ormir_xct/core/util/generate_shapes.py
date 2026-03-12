@@ -2,7 +2,7 @@
 Created by: Michael Kuczynski
 Created on: ??
 
-Description: Functions to generate filled/hollow spheres, cylinders, plates, and compute thickness. 
+Description: Functions to generate filled/hollow spheres, cylinders, plates, and compute thickness.
 """
 
 import os

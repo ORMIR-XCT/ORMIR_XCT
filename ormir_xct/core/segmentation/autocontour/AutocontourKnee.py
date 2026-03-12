@@ -1,5 +1,6 @@
 import SimpleITK as sitk
 
+
 class AutocontourKnee:
     """
     A class for computing the periosteal and endosteal masks for a knee

@@ -5,11 +5,11 @@ Created by:   Michael Kuczynski
 Created on:   June 29, 2022
 
 Description: Binarize an input image following the standard
-              segmentation protocol performed in IPL. 
+              segmentation protocol performed in IPL.
 
 Notes:
   1. Gaussian smoothing is done in IPL with sigma = 0.5
-      and support = 1 (for example). In ITK, this translates 
+      and support = 1 (for example). In ITK, this translates
       to using the SmoothingRecursiveGaussian filter with
       sigma = 0.5 * voxel size = 0.5 * 0.0606964.
   2. The output of the Guassian filter will be a float
@@ -38,12 +38,12 @@ thresholds = {
     "Per1000_Upper": 1000.0,
 }
 
-threshold_dict = { 
+threshold_dict = {
     "bmd": (thresholds["BMD_Lower"], thresholds["BMD_Upper"]),
     "scanco": (thresholds["Native_Lower"], thresholds["Native_Upper"]),
     "attenuation": (thresholds["LinAtt_Lower"], thresholds["LinAtt_Upper"]),
     "hu": (thresholds["HU_Lower"], thresholds["HU_Upper"]),
-    "per1000": (thresholds["Per1000_Lower"], thresholds["Per1000_Upper"])
+    "per1000": (thresholds["Per1000_Lower"], thresholds["Per1000_Upper"]),
 }
 
 
@@ -55,7 +55,7 @@ def seg_gauss(
     value_outside_range=0,
     sigma=0.5,
     support=1,
-    use_image_spacing=False
+    use_image_spacing=False,
 ):
     """
     Perform Gaussian smoothing with an explicit kernel support and then
@@ -123,5 +123,3 @@ def seg_gauss(
         outsideValue=value_outside_range,
     )
     return seg
-
-

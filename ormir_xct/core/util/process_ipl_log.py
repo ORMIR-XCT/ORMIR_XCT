@@ -2,7 +2,7 @@
 Created by: Michael Kuczynski
 Created on: ??
 
-Description: Functions to parse IPL logs to extract thickness data. 
+Description: Functions to parse IPL logs to extract thickness data.
 """
 
 import os

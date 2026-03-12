@@ -4,16 +4,17 @@ from ormir_xct.core.util.file_reader import verify_image
 from ormir_xct.core.util.hrpqct_rescale import convert_hu_to_bmd
 from ormir_xct.core.segmentation.autocontour.AutocontourKnee import AutocontourKnee
 
+
 def autocontour(
     img, mu_water=0.2409, rescale_slope=1603.51904, rescale_intercept=-391.209015
 ):
     """Script for calculating periosteal masks using the autocontour workflow
-    
+
     Parameters
     ----------
     - img : str
         str path or sitk image of bones
-    
+
     Returns
     ----------
     - return_values  : tuple
@@ -34,4 +35,3 @@ def autocontour(
     mask = prx_mask + dst_mask
 
     return dst_mask, prx_mask, mask
-

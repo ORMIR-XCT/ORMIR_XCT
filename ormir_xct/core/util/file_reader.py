@@ -62,7 +62,7 @@ def file_reader(input_file_path):
 
 def verify_image(input_image, precision=None):
     """
-    Provide with string path or sitk.Image. Ensures string paths are converted to sitk.Image before processing. 
+    Provide with string path or sitk.Image. Ensures string paths are converted to sitk.Image before processing.
     Avoid using for masks as the file_reader method uses sitk.sitkFloat32 precision.
 
     Parameters

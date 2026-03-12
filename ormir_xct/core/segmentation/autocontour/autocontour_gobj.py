@@ -1,6 +1,6 @@
 """
 Use this script instead of the autocontour.py script if the bones are
-too close to distinguish between distal and proximal. You will need to 
+too close to distinguish between distal and proximal. You will need to
 provide the distal and proximal GOBJ masks (as NIFTI or similar) to mask
 out the bone of interest.
 """
@@ -13,9 +13,9 @@ from ormir_xct.core.segmentation.autocontour.AutocontourKnee import AutocontourK
 
 
 def autocontour_gobj(img, dst_gobj, prx_gobj):
-    """Script for calculating periosteal masks using distal and proximal GOBJ masks. 
+    """Script for calculating periosteal masks using distal and proximal GOBJ masks.
     A variant of autocontour for when bones are too close to distinguish between distal and proximal.
-    
+
     Parameters
     ----------
     - img : str or sitk.Image
@@ -26,13 +26,13 @@ def autocontour_gobj(img, dst_gobj, prx_gobj):
 
     - prx_gobj: satr or sitk.Image
         str path or sitk image of proximal mask
-        
+
     Returns
     ----------
     - return_values : tuple
-        contains sitk images of dst_mask, prx_mask, mask 
+        contains sitk images of dst_mask, prx_mask, mask
     """
-    
+
     # Read in images as floats to increase precision
     img = verify_image(img, sitk.sitkFloat32)
     dst_gobj = verify_image(dst_gobj)

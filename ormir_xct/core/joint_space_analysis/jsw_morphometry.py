@@ -15,7 +15,6 @@ import SimpleITK as sitk
 from ormir_xct.core.util.connected_check import connected_check
 from ormir_xct.core.util.hildebrand_thickness import calc_structure_thickness_statistics
 
-
 # Set standard global variables used in IPL script
 # These values are used for erosion/dilation
 MISC0 = 45
@@ -51,17 +50,22 @@ def jsw_pad(joint_seg_image):
         joint_seg_image, [MISC2, MISC2, 0], [MISC2, MISC2, 0], 0
     )
     pad_image = sitk.BinaryThreshold(pad_image, 1, 127, 60, 0)
-    size = [joint_seg_image.GetSize()[0]+ MISC2*2, joint_seg_image.GetSize()[1]+ MISC2*2, joint_seg_image.GetSize()[2]]
+    size = [
+        joint_seg_image.GetSize()[0] + MISC2 * 2,
+        joint_seg_image.GetSize()[1] + MISC2 * 2,
+        joint_seg_image.GetSize()[2],
+    ]
     origin = joint_seg_image.GetOrigin()
     spacing = joint_seg_image.GetSpacing()
     direction = joint_seg_image.GetDirection()
-    pad_image = sitk.Resample(pad_image, 
-                              size, 
-                              interpolator=sitk.sitkNearestNeighbor, 
-                              outputOrigin=origin,
-                              outputSpacing=spacing,
-                              outputDirection=direction
-                              )
+    pad_image = sitk.Resample(
+        pad_image,
+        size,
+        interpolator=sitk.sitkNearestNeighbor,
+        outputOrigin=origin,
+        outputSpacing=spacing,
+        outputDirection=direction,
+    )
 
     return pad_image
 
