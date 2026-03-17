@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.joint_space_analysis.connected_check import connected_check
+from ormir_xct.core.util.connected_check import connected_check
 
 
 def create_sphere_mask(shape, voxel_width, radius):

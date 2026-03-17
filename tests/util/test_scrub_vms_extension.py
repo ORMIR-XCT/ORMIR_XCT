@@ -12,7 +12,7 @@ import shutil
 import tempfile
 import unittest
 
-from ormir_xct.util.scrub_vms_extension import scrub_vms_extension
+from ormir_xct.core.util.scrub_vms_extension import scrub_vms_extension
 
 
 class TestScrubVMSExtension(unittest.TestCase):

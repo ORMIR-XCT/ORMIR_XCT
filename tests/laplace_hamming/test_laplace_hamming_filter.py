@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from ormir_xct.segmentation.fft_laplace import fft_laplace_hamming, segmentation_laplace_hamming
+from ormir_xct.core.segmentation.fft_laplace_hamming import fft_laplace_hamming, fft_laplace_hamming_seg
 
 class TestLaplaceHammingFilter(unittest.TestCase):
 
@@ -48,7 +48,7 @@ class TestLaplaceHammingFilter(unittest.TestCase):
             os.remove(self.test_nii_temp)
 
 
-        segmentation_laplace_hamming(self.test_nii, write_path=self.test_nii_temp)
+        fft_laplace_hamming_seg(self.test_nii, write_path=self.test_nii_temp)
 
         self.assertTrue(
             os.path.isfile(self.test_nii_filtered_temp),
@@ -57,7 +57,7 @@ class TestLaplaceHammingFilter(unittest.TestCase):
 
     def test_output_file_not_generated(self):
         """
-        Test segmentation_laplace_hamming does not write output when segmentation is requested without write path.
+        Test fft_laplace_hamming_seg does not write output when segmentation is requested without write path.
         """
 
         output_path = "temp_output.nii"
@@ -66,7 +66,7 @@ class TestLaplaceHammingFilter(unittest.TestCase):
         if os.path.exists(output_path):
             os.remove(output_path)
 
-        segmentation_laplace_hamming(self.test_nii_temp)
+        fft_laplace_hamming_seg(self.test_nii_temp)
 
         self.assertFalse(
             os.path.exists(output_path),
@@ -88,7 +88,7 @@ class TestLaplaceHammingFilter(unittest.TestCase):
         Test that the segmentation works with image input.
         """
         image = sitk.ReadImage(self.test_nii_temp)
-        segmented_image = segmentation_laplace_hamming(image, self.test_nii_filtered_temp)
+        segmented_image = fft_laplace_hamming_seg(image, self.test_nii_filtered_temp)
         self.assertIsNotNone(segmented_image, "The file wasn't segmented.")
         self.assertIsInstance(segmented_image, sitk.Image, "The output isn't an image.")
 
@@ -98,7 +98,7 @@ class TestLaplaceHammingFilter(unittest.TestCase):
         """
         image = sitk.ReadImage(self.test_nii_temp)
         image_np = sitk.GetArrayFromImage(image)
-        segmented_image = segmentation_laplace_hamming(image, self.test_nii_filtered_temp)
+        segmented_image = fft_laplace_hamming_seg(image, self.test_nii_filtered_temp)
         segmented_image_np = sitk.GetArrayFromImage(segmented_image)
         self.assertIsNotNone(segmented_image, "The file wasn't segmented.")
 

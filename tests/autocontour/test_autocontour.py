@@ -14,7 +14,7 @@ import unittest
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.segmentation.autocontour import autocontour
+from ormir_xct.core.segmentation.autocontour import autocontour
 
 
 class TestAutocontour(unittest.TestCase):
@@ -22,8 +22,8 @@ class TestAutocontour(unittest.TestCase):
         self.true_mask_filename = "test_joint_mask.nii"
         self.true_image_filename = "test_joint.nii"
         self.path = os.getcwd()
-        self.parent = os.path.dirname(self.path)
-        self.filepath = os.path.join(self.parent, "data")
+        self.filepath = os.path.join(self.path, "tests")
+        self.filepath = os.path.join(self.filepath, "data")
 
         # Create a temp directory
         self.test_dir = tempfile.mkdtemp()

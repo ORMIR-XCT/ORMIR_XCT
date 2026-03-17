@@ -1,5 +1,5 @@
 """
-test_ipl_segmentation.py
+test_seg_gauss.py
 
 Created by:   Michael Kuczynski
 Created on:   June 29, 2022
@@ -13,7 +13,7 @@ import numpy as np
 import SimpleITK as sitk
 import tempfile
 
-from ormir_xct.segmentation.gauss_seg import gauss_seg
+from ormir_xct.core.segmentation.seg_gauss import seg_gauss
 
 
 def create_sphere_mask(shape, voxel_width, radius):
@@ -45,18 +45,18 @@ class TestIPLSegmentation(unittest.TestCase):
 
         return sphere
     
-    def test_gauss_segmentation(self):
-        """Tests gauss_seg with image input"""
+    def test_seg_gauss(self):
+        """Tests seg_gauss with image input"""
         sphere_array = self.create_test_image_np()
         sphere = sitk.GetImageFromArray(sphere_array)
 
-        result_image = gauss_seg(sphere, 1, 2, 1, 1, 0.01)
+        result_image = seg_gauss(sphere, 1, 2, 1, 1, 0.01)
         result_array = sitk.GetArrayFromImage(result_image).astype(float)
 
         np.testing.assert_array_equal(sphere_array, result_array)
 
-    def test_gauss_segmentation_path_handling(self):
-        """Tests gauss_seg with path input"""
+    def test_seg_gauss_path_handling(self):
+        """Tests seg_gauss with path input"""
         # Create a temp directory
         self.test_dir = tempfile.mkdtemp()
 
@@ -69,7 +69,7 @@ class TestIPLSegmentation(unittest.TestCase):
         sphere_array = self.create_test_image_np()
         sitk.WriteImage(sitk.GetImageFromArray(sphere_array), self.test_input_nii)
 
-        result_image = gauss_seg(self.test_input_nii, 1, 2, 1, 1, 0.01)
+        result_image = seg_gauss(self.test_input_nii, 1, 2, 1, 1, 0.01)
         result_array = sitk.GetArrayFromImage(result_image).astype(float)
 
         np.testing.assert_array_equal(sphere_array, result_array)

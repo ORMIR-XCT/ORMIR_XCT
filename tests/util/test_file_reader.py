@@ -11,7 +11,7 @@ import os
 import unittest
 import SimpleITK as sitk
 
-from ormir_xct.util.file_reader import file_reader, verify_image
+from ormir_xct.core.util.file_reader import file_reader, verify_image
 
 
 class TestFileReader(unittest.TestCase):

@@ -12,7 +12,7 @@ import unittest
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.util.segmentation_evaluation import (
+from ormir_xct.core.util.segmentation_evaluation import (
     binarize_numpy_array,
     get_distance_map_and_surface,
     get_surface_to_surface_distances_list,

@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.joint_space_analysis.jsw_morphometry import (
+from ormir_xct.core.joint_space_analysis.jsw_morphometry import (
     jsw_pad,
     jsw_dilate,
     jsw_erode,
