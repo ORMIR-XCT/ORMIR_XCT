@@ -40,7 +40,8 @@ dev = [
     "black",
     "hypothesis",
     "pytest",
-    "ruff"
+    "ruff",
+    "setuptools-scm"
 ]
 
 [project.urls]
@@ -84,7 +85,7 @@ extend-exclude = [
     "dist",
 ]
 
-[too.ruff.lint]
+[tool.ruff.lint]
 select = [
     "E",   # PEP8 errors
     "F",   # pyflakes (undefined, unused)
