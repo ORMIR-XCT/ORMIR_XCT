@@ -10,9 +10,9 @@ Description: Test BMD calculation.
 import unittest
 import numpy as np
 import SimpleITK as sitk
-from ormir_xct.bone_mineral_density.bmd import bmd
-from ormir_xct.util.scanco_rescale import (
-    convert_scanco_to_bmd,
+from ormir_xct.core.microarchitecture.bmd import bmd
+from ormir_xct.core.util.hrpqct_rescale import (
+    convert_native_to_bmd,
     convert_linear_attenuation_to_bmd,
     convert_hu_to_bmd,
 )
@@ -33,7 +33,7 @@ class TestBoneMineralDensity(unittest.TestCase):
     def test_convert_to_bmd_from_scanco(self):
         array = np.ones((5, 5, 5), dtype=float)
 
-        scanco_array = convert_scanco_to_bmd(array, 1, 1, 1)
+        scanco_array = convert_native_to_bmd(array, 1, 1, 1)
         mean = scanco_array.mean()
         std = scanco_array.std()
 

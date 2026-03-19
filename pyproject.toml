@@ -1,0 +1,105 @@
+[build-system]
+requires = ["setuptools>=77", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ormir-xct"
+dynamic = ["version"]
+description = "A Python package for high-resolution CT image processing"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+readme = "README.md"
+authors = [
+    {name = "Michael T. Kuczynski", email = "michaelkuczynski14@gmail.com"},
+]
+keywords = ["ORMIR", "ORMIR-XCT", "HR-pQCT", "microCT", "PCCT"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3"
+]
+requires-python = ">=3.11"
+dependencies = [
+    "itk",
+    "itk-ioscanco",
+    "itkwidgets",
+    "notebook",
+    "numpy",
+    "numba",
+    "pandas",
+    "scipy",
+    "scikit-image",
+    "SimpleITK",
+    "vtk",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "hypothesis",
+    "pytest",
+    "ruff",
+    "setuptools-scm"
+]
+
+[project.urls]
+"Download" = "https://github.com/ORMIR-XCT/ORMIR-XCT/releases"
+"Source"   = "https://github.com/ORMIR-XCT/ORMIR-XCT"
+"Homepage" = "https://github.com/ORMIR-XCT"
+
+[project.scripts]
+autocontour = "ormir_xct.workflows.autocontour_workflow:main"
+autocontour-gobj = "ormir_xct.workflows.autocontour_gobj_workflow:main"
+bmd = "ormir_xct.workflows.bmd_workflow:main"
+bmd-masked = "ormir_xct.workflows.bmd_masked_workflow:main"
+trab-microarch = "ormir_xct.workflows.trab_microarchitecture_workflow:main"
+trab-bvtv = "ormir_xct.workflows.trab_bvtv_workflow:main"
+trab-th = "ormir_xct.workflows.trab_th_workflow:main"
+trab-sp = "ormir_xct.workflows.trab_sp_workflow:main"
+fft-laplace-hamming = "ormir_xct.workflows.fft_laplace_hamming_workflow:main"
+seg-gauss = "ormir_xct.workflows.seg_gauss_workflow:main"
+jsw-analysis = "ormir_xct.workflows.jsw_analysis_workflow:main"
+adaptive-local-threshold = "ormir_xct.workflows.adaptive_local_threshold_workflow:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ormir_xct*"]
+exclude = ["manuscript*"]
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"
+tag_regex      = "^v?(?P<version>\\d+\\.\\d+\\.\\d+)$"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+extend-exclude = [
+    ".git",
+    ".gitignore",
+    "__pycache__",
+    "docs",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # PEP8 errors
+    "F",   # pyflakes (undefined, unused)
+    "W",   # warnings
+    "I",   # import sorting
+    "B",   # real bug patterns
+    "UP",  # modern Python usage
+]
+ignore = [
+    "E203",  # needed for Black compatibility
+    "E501",  # line length
+    "W503",  # line breaks before binary operators
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]

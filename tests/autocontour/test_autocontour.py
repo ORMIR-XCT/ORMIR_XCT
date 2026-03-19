@@ -14,7 +14,7 @@ import unittest
 import numpy as np
 import SimpleITK as sitk
 
-from ormir_xct.autocontour.autocontour import autocontour
+from ormir_xct.core.segmentation.autocontour import autocontour
 
 
 class TestAutocontour(unittest.TestCase):
@@ -22,8 +22,8 @@ class TestAutocontour(unittest.TestCase):
         self.true_mask_filename = "test_joint_mask.nii"
         self.true_image_filename = "test_joint.nii"
         self.path = os.getcwd()
-        self.parent = os.path.dirname(self.path)
-        self.filepath = os.path.join(self.parent, "data")
+        self.filepath = os.path.join(self.path, "tests")
+        self.filepath = os.path.join(self.filepath, "data")
 
         # Create a temp directory
         self.test_dir = tempfile.mkdtemp()
@@ -79,6 +79,19 @@ class TestAutocontour(unittest.TestCase):
         true_joint_mask = sitk.ReadImage(self.true_joint_mask, sitk.sitkUInt8)
         test_joint_image = sitk.ReadImage(self.test_image, sitk.sitkFloat32)
         dst_mask, prx_mask, mask = autocontour(test_joint_image)
+
+        self.spacing_check(true_joint_mask, mask)
+        self.dimension_check(true_joint_mask, mask)
+        self.position_check(true_joint_mask, mask)
+        self.direction_check(true_joint_mask, mask)
+
+        test_mask_array = sitk.GetArrayFromImage(mask)
+        true_mask_array = sitk.GetArrayFromImage(true_joint_mask)
+        np.testing.assert_array_equal(true_mask_array, test_mask_array)
+    
+    def test_autocontour_path_handling(self):
+        true_joint_mask = sitk.ReadImage(self.true_joint_mask, sitk.sitkUInt8)
+        dst_mask, prx_mask, mask = autocontour(self.test_image)
 
         self.spacing_check(true_joint_mask, mask)
         self.dimension_check(true_joint_mask, mask)

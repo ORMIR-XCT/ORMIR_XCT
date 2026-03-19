@@ -1,6 +1,6 @@
-# This workflow runs tests for the ormir_xct Python environment
+# This workflow runs tests for the ormir-xct Python environment
 
-name: Test ormir_xct Python Env on Mac, Linux, Windows
+name: Test ormir-xct Python Env on Mac, Linux, Windows
 
 on: [push]
 
@@ -12,57 +12,63 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        python-version:: [3.11.11]
+        python-version:: ["3.11"]
     defaults:
       run:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: 3.11.11
-          miniconda-version: 'latest'
+          python-version: ${{ matrix.python-version }}
+          miniconda-version: latest
           auto-update-conda: false
           auto-activate-base: false
+          activate-environment: ormir-xct
           environment-file: environment.yml
-      - run: |
+      - name: Install ormir-xct
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Check ormir-xct install
+        run: |
           conda info
           conda list
-          python -c "import itk"
-          python -c "import vtk"
-          python -c "import SimpleITK"
+          python -V
+          python -c "import itk; print('itk ok')"
+          python -c "import vtk; print('vtk ok')"
+          python -c "import SimpleITK; print('SimpleITK ok')"
+          python -c "import itk; image_io = itk.ScancoImageIO.New(); print('itk_ioscanco ok')"
           
   test-apple-silicon:
     name: Apple Silicon
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["macos-15"]
+    runs-on: macos-15
     defaults:
       run:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: 3.11.11
-          miniconda-version: 'latest'
+          python-version: "3.11"
+          miniconda-version: latest
           auto-update-conda: false
           auto-activate-base: false
-      - name: Install ormir_xct
+          activate-environment: ormir-xct
+      - name: Install ormir-xct
         run: |
-          CONDA_SUBDIR=osx-64 conda create -n ormir_xct python=3.11.11 pip
-          conda activate ormir_xct
-          conda env config vars set CONDA_SUBDIR=osx-64
-          conda deactivate
-          conda activate ormir_xct
-          pip install -r requirements.txt
-      - name: Check ormir_xct install
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Check ormir-xct install
         run: |
-          conda activate ormir_xct
           conda info
           conda list
-          python -c "import itk"
-          python -c "import vtk"
-          python -c "import SimpleITK"
+          python -V
+          python -c "import itk; print('itk ok')"
+          python -c "import vtk; print('vtk ok')"
+          python -c "import SimpleITK; print('SimpleITK ok')"
+          python -c "import itk; image_io = itk.ScancoImageIO.New(); print('itk_ioscanco ok')"

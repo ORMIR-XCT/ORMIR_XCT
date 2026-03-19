@@ -13,7 +13,7 @@ import numpy as np
 import SimpleITK as sitk
 
 from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
-from ormir_xct.util.sitk_vtk import sitk_to_vtk, vtk_to_sitk
+from ormir_xct.core.util.sitk_vtk import sitk_to_vtk, vtk_to_sitk
 
 
 def create_test_image(dimensions, value):

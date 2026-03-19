@@ -10,12 +10,12 @@ Description: Test BMD calculation using a provided mask.
 import unittest
 import numpy as np
 import SimpleITK as sitk
-from ormir_xct.util.scanco_rescale import (
-    convert_scanco_to_bmd,
+from ormir_xct.core.util.hrpqct_rescale import (
+    convert_native_to_bmd,
     convert_linear_attenuation_to_bmd,
     convert_hu_to_bmd,
 )
-from ormir_xct.bone_mineral_density.bmd_masked import bmd_masked
+from ormir_xct.core.microarchitecture.bmd_masked import bmd_masked
 
 
 class TestBoneMineralDensityMasked(unittest.TestCase):
@@ -46,7 +46,7 @@ class TestBoneMineralDensityMasked(unittest.TestCase):
         mask = np.zeros((5, 5, 5), dtype=float)
         mask[1:4, 1:4, 1:4] = 1
 
-        scanco_array = convert_scanco_to_bmd(array, 1, 1, 1)
+        scanco_array = convert_native_to_bmd(array, 1, 1, 1)
         masked_array = scanco_array * mask
         mean = masked_array[masked_array > 0].mean()
         std = masked_array[masked_array > 0].std()

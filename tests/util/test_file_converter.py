@@ -14,8 +14,8 @@ import tempfile
 import unittest
 import SimpleITK as sitk
 
-from ormir_xct.util.sitk_itk import itk_sitk
-from ormir_xct.util.file_converter import file_converter
+from ormir_xct.core.util.sitk_itk import itk_sitk
+from ormir_xct.core.util.file_converter import file_converter
 
 
 class TestFileConverter(unittest.TestCase):
@@ -29,8 +29,8 @@ class TestFileConverter(unittest.TestCase):
             "test_dicom",
         ]
 
-        self.path = os.getcwd()
-        self.parent = os.path.dirname(self.path)
+        #self.path = os.getcwd()
+        self.parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.filepath = os.path.join(self.parent, "data")
 
         # Create a temp directory

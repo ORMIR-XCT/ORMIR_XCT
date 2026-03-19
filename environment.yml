@@ -1,4 +1,4 @@
-name: ormir_xct
+name: ormir-xct
 channels:
   - simpleitk
   - anaconda
@@ -6,7 +6,7 @@ channels:
   - defaults
 dependencies:
   - pip
-  - python=3.11.11
+  - python=3.11
   - pip:
     - ormir-xct
     - itk
