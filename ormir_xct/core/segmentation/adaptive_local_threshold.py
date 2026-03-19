@@ -83,7 +83,7 @@ def compute_adaptive_local_threshold_segmentation(
     footprint: np.ndarray,
     mode: str,
     sigma: float,
-    min_size: int,
+    max_size: int,
 ) -> np.ndarray:
     """
     Perform local adaptive thresholding on a density image.
@@ -108,7 +108,7 @@ def compute_adaptive_local_threshold_segmentation(
     sigma : float
         The sigma to use for the gaussian filter.
 
-    min_size : int
+    max_size : int
         The minimum size of structures to keep in the segmentation.
 
     Returns
@@ -142,7 +142,7 @@ def compute_adaptive_local_threshold_segmentation(
     return remove_small_objects(
         ((density > low_threshold) & (density > threshold_image))
         | (density > high_threshold),
-        min_size=min_size,
+        max_size=max_size,
     )
 
 

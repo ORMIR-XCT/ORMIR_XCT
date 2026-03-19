@@ -1,6 +1,6 @@
 import argparse
 
-from ormir_xct.core.microarchitecture.bone_mineral_density.bmd import bmd
+from ormir_xct.core.microarchitecture.bmd import bmd
 from ormir_xct.core.util.file_reader import verify_image
 
 

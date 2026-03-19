@@ -38,7 +38,7 @@ from ormir_xct.core.joint_space_analysis.jsw_morphometry import (
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="jsw-main",
-        description="Reimplementation of the IPL joint space width analysis.",
+        description="Reimplementation of the IPL joint space width analysis workflow.",
     )
     parser.add_argument(
         "joint_seg", type=str, help="Path to the joint segmentation image"

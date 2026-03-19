@@ -1,13 +1,13 @@
 import argparse
 
-from ormir_xct.core.segmentation.fft_laplace import segmentation_laplace_hamming
+from ormir_xct.core.segmentation.fft_laplace_hamming import fft_laplace_hamming_seg
 from ormir_xct.core.util.file_reader import verify_image
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="fft-laplace",
-        description="Binarize an input image using the Laplace-Hamming approach.",
+        description="Binarize an input image using a Laplace-Hamming filter and fixed threshold.",
     )
     parser.add_argument("input_image", type=str, help="Path to the input image")
     parser.add_argument("output_path", type=str, help="Path to the output image")
@@ -32,7 +32,7 @@ def run(
 ):
     image = verify_image(input_image)
 
-    segmented_image_np = segmentation_laplace_hamming(
+    segmented_image_np = fft_laplace_hamming_seg(
         image,
         output_path,
         eps,

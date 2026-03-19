@@ -54,6 +54,27 @@ Example Jupyter Notebooks demonstrating the major functionality of the ORMIR-XCT
 
 ---
 
+## Command Line Applications
+The ORMIR-XCT package now provides a command line interface for some workflows. To install the command line applications, activate your `ormir-xct` Anaconda environment and run:
+`pip install -e .`
+For detailed usage instructions, type the command followed by `-h` into the terminal.
+
+| Command                    | Description                                                                              |
+| ---------------------------|----------------------------------------------------------------------------------------- |
+| `adaptive-local-threshold` | Perform adaptive local thresholding on an image to segment bone.                         |
+| `autocontour`              | Generate proximal, distal, and combined periosteal masks using the autocontour workflow. |
+| `bmd`                      | Compute bone mineral density for an input image.                                         |
+| `bmd-masked`               | Compute masked bone mineral density for an input image, within the provided mask         |
+| `fft-laplace-hamming`      | Binarize an input image using a Laplace-Hamming filter and fixed threshold.              |
+| `jsw-analysis`             | Reimplementation of the IPL joint space width analysis worflow.                          |
+| `seg-gauss`                | Binarize an input image using Gaussian smoothing followed by a fixed threshold.          |
+| `trab-bvtv`                | Compute trabecular bone volume fraction (Tb.BV/TV).                                      |
+| `trab-th`                  | Compute trabecular thickness (Tb.Th).                                                    |
+| `trab-sp`                  | Compute trabecular separation (Tb.Sp).                                                   |
+| `trab-microarch`           | Compute trabecular microarchitecture parameters (Tb.Th, Tb.Sp, and Tb.BV/TV).            |
+
+---
+
 ## Ways to Contribute
 ### Reporting Bugs
 - Bugs can be reported by creating a new GitHub issue in this repository. For each bug, please provide details on how to reproduce the bug and the specific error message (if possible).
