@@ -13,7 +13,7 @@ Description: Calculates trabecular microarchitecture parameters, including:
 """
 
 import SimpleITK as sitk
-
+import numpy as np
 from ormir_xct.core.util.hildebrand_thickness import calc_structure_thickness_statistics
 
 
@@ -126,6 +126,62 @@ def trabecular_number_derived(bvtv, tbth):
     
     return bvtv/tbth
 
+def trabecular_number(trab_seg, peri_mask):
+    """
+    Finding the thickness of the background between thinned ridge centers to estimate 
+    inverse trabecular number. Makes use of the existing structure thickness calculation method.
+
+    Method is as described here: https://www.sciencedirect.com/science/article/pii/S0895611198000718
+
+    Parameters:
+    trab_seg: SimpleITK.Image
+        Binary image of trabecular segmentation.
+
+    peri_mask: SimpleITK.Image
+        Binary image of periosteal mask.
+    
+    Returns:
+    float
+        Calculated trabecular number.
+    """
+    spacing = trab_seg.GetSpacing()
+
+    trab_seg_np = sitk.GetArrayFromImage(trab_seg) 
+    peri_mask_np = sitk.GetArrayFromImage(peri_mask)
+
+    # ensure values of 1 (like above)
+    trab_seg_np = trab_seg_np != 0
+    peri_mask_np = peri_mask_np != 0
+
+    # check shape
+    if trab_seg_np.shape != peri_mask_np.shape:
+        raise ValueError("trab_seg and peri_mask must have the same dimensions.")
+
+    # produce a skeleton for ridge extraction
+    skeleton = sitk.BinaryThinning(
+        sitk.GetImageFromArray(trab_seg_np.astype(np.uint8))
+    )
+
+    skeleton_np = sitk.GetArrayFromImage(skeleton)
+    skeleton_np = skeleton_np != 0
+
+    ridge_background = peri_mask_np & ~skeleton_np
+
+    thickness_stats = calc_structure_thickness_statistics(
+        ridge_background,
+        spacing,
+        0,
+        oversample=False,
+        skeletonize=False, 
+    )
+
+    mean_ridge_spacing = thickness_stats[0]
+
+    if mean_ridge_spacing is None or mean_ridge_spacing <= 0:
+        raise ValueError("Mean ridge spacing must be positive to compute Tb.N.")
+
+    # Tb.N. is taken as the inverse of the mean spacing between ridges
+    return 1/mean_ridge_spacing
 
 
 def trabecular_microarchitecture(trab_seg, peri_mask):
@@ -147,6 +203,8 @@ def trabecular_microarchitecture(trab_seg, peri_mask):
     bvtv_results = trabecular_bone_volume_fraction(trab_seg, peri_mask)
     tbth_results = trabecular_thickness(trab_seg)
     tbsp_results = trabecular_separation(trab_seg, peri_mask)
+    tbn_results = trabecular_number(trab_seg, peri_mask)
+    tbn_derived = trabecular_number_derived(bvtv_results, tbth_results[0])
 
     tb_microarch = {
         "Tb.BV/TV": bvtv_results,
@@ -158,6 +216,8 @@ def trabecular_microarchitecture(trab_seg, peri_mask):
         "StDev Tb.Sp": tbsp_results[1],
         "Min Tb.Sp": tbsp_results[2],
         "Max Tb.Sp": tbsp_results[3],
+        "Derived Tb.N": tbn_derived,
+        "Tb.N": tbn_results,
     }
 
     return (tb_microarch, tbth_results[4], tbsp_results[4])
