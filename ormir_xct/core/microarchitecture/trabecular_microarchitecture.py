@@ -120,6 +120,14 @@ def trabecular_separation(trab_seg, peri_mask):
     return thickness_stats
 
 
+def trabecular_number_derived(bvtv, tbth):
+    if tbth <= 0:
+        raise ValueError("Tb.Th must be positive.")
+    
+    return bvtv/tbth
+
+
+
 def trabecular_microarchitecture(trab_seg, peri_mask):
     """
     Compute trabecular microarchitecture parameters.
