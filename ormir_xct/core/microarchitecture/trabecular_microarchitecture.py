@@ -14,6 +14,7 @@ Description: Calculates trabecular microarchitecture parameters, including:
 
 import SimpleITK as sitk
 import numpy as np
+from skimage.morphology import skeletonize
 from ormir_xct.core.util.hildebrand_thickness import calc_structure_thickness_statistics
 
 
@@ -126,7 +127,7 @@ def trabecular_number_derived(bvtv, tbth):
     
     return bvtv/tbth
 
-def trabecular_number(trab_seg, peri_mask):
+def trabecular_number(trab_seg, bone_mask):
     """
     Finding the thickness of the background between thinned ridge centers to estimate 
     inverse trabecular number. Makes use of the existing structure thickness calculation method.
@@ -137,7 +138,7 @@ def trabecular_number(trab_seg, peri_mask):
     trab_seg: SimpleITK.Image
         Binary image of trabecular segmentation.
 
-    peri_mask: SimpleITK.Image
+    bone_mask: SimpleITK.Image
         Binary image of periosteal mask.
     
     Returns:
@@ -147,32 +148,38 @@ def trabecular_number(trab_seg, peri_mask):
     spacing = trab_seg.GetSpacing()
 
     trab_seg_np = sitk.GetArrayFromImage(trab_seg) 
-    peri_mask_np = sitk.GetArrayFromImage(peri_mask)
+    bone_mask_np = sitk.GetArrayFromImage(bone_mask)
 
     # ensure values of 1 (like above)
     trab_seg_np = trab_seg_np != 0
-    peri_mask_np = peri_mask_np != 0
+    bone_mask_np = bone_mask_np != 0
 
     # check shape
-    if trab_seg_np.shape != peri_mask_np.shape:
-        raise ValueError("trab_seg and peri_mask must have the same dimensions.")
+    if trab_seg_np.shape != bone_mask_np.shape:
+        raise ValueError("trab_seg and bone_mask must have the same dimensions.")
 
-    # produce a skeleton for ridge extraction
-    skeleton = sitk.BinaryThinning(
-        sitk.GetImageFromArray(trab_seg_np.astype(np.uint8))
-    )
+    # produce a skeleton for ridge extraction (not necessary if we use skeleton in calc_structure_thickness_statistics)
 
-    skeleton_np = sitk.GetArrayFromImage(skeleton)
-    skeleton_np = skeleton_np != 0
+    # skeleton_np = skeletonize(trab_seg_np, method = 'lee')
+    # sitk.WriteImage(sitk.GetImageFromArray(skeleton_np.astype(np.uint8)), 'test2.nii')
 
-    ridge_background = peri_mask_np & ~skeleton_np
+    # skeleton_np = skeleton_np != 0
+    # ridge_background = (bone_mask_np & (~skeleton_np)).astype(np.uint8)
+
+
+    ridge_background = (bone_mask_np & (~trab_seg_np)).astype(np.uint8)
+
+    # ridge_background = ridge_background.astype(np.uint8)
+
+    ridge_background_img = sitk.GetImageFromArray(ridge_background)
+    # sitk.WriteImage(ridge_background_img, 'test3.nii')
 
     thickness_stats = calc_structure_thickness_statistics(
         ridge_background,
         spacing,
         0,
         oversample=False,
-        skeletonize=False, 
+        skeletonize=True, 
     )
 
     mean_ridge_spacing = thickness_stats[0]
@@ -221,3 +228,6 @@ def trabecular_microarchitecture(trab_seg, peri_mask):
     }
 
     return (tb_microarch, tbth_results[4], tbsp_results[4])
+
+
+
