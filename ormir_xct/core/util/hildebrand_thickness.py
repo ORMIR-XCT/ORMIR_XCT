@@ -18,7 +18,7 @@ from scipy.ndimage.morphology import (
     binary_dilation,
     distance_transform_edt,
 )
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import warnings
 
 EPS = 1e-8
@@ -211,7 +211,7 @@ def calc_structure_thickness_statistics(
     voxel_width: Union[float, Iterable],
     min_thickness: float,
     sub_mask: Optional[np.ndarray] = None,
-    pad_amount: Optional[Union[int, Tuplep[int, int, int]]] = None,
+    pad_amount: Optional[Union[int, Tuple[int, int, int]]] = None,
     oversample: bool = True,
     skeletonize: bool = True,
 ) -> Tuple[float, float, float, float, np.ndarray]:
