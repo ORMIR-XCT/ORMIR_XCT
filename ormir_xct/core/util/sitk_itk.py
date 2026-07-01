@@ -35,6 +35,13 @@ def sitk_itk(sitk_image):
         itk.GetMatrixFromArray(np.reshape(np.array(sitk_image.GetDirection()), [3] * 2))
     )
 
+    metadata_dict = itk_image.GetMetaDataDictionary()
+    for key in sitk_image.GetMetaDataKeys():
+        try:
+            metadata_dict[key] = sitk_image.GetMetaData(key)
+        except (RuntimeError, TypeError):
+            pass
+
     return itk_image
 
 

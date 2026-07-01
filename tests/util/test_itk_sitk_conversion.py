@@ -72,15 +72,19 @@ class TestSITKToITKConversion(unittest.TestCase):
     def test_sitk_to_itk(self):
         expected_image = itk.GetImageFromArray(create_test_image((10, 10, 10), 1))
         test_image = sitk.GetImageFromArray(create_test_image((10, 10, 10), 1))
+        
+        test_metadata = {"PatientName": "TEST-PATIENT", "ScannerID": "1234"}
+        for key, value in test_metadata.items():
+            test_image.SetMetaData(key, value)
 
         result_image = sitk_itk(test_image)
 
-        epected_image_np = itk.GetArrayFromImage(expected_image)
+        expected_image_np = itk.GetArrayFromImage(expected_image)
         result_image_np = itk.GetArrayFromImage(result_image)
 
         np.testing.assert_array_equal(expected_image, result_image)
         self.spacing_check(expected_image, result_image)
-        self.dimension_check(epected_image_np, result_image_np)
+        self.dimension_check(expected_image_np, result_image_np)
         self.position_check(expected_image, result_image)
 
         expected_itk_direction = (
@@ -106,3 +110,35 @@ class TestSITKToITKConversion(unittest.TestCase):
             result_image.GetDirection()(2, 2),
         )
         self.direction_check(expected_itk_direction, result_itk_direction)
+        self.metadata_check(result_image, test_metadata)
+
+    def metadata_check(self, output_image, expected_metadata):
+        """
+        Checks that expected metadata is present in an ITK or SimpleITK image.
+        """
+        if isinstance(output_image, sitk.Image):
+            output_dict = {k: output_image.GetMetaData(k) for k in output_image.GetMetaDataKeys()}
+        else:
+            output_dict = dict(output_image)
+
+        for key, value in expected_metadata.items():
+            self.assertIn(key, output_dict)
+            self.assertEqual(str(output_dict[key]), str(value))
+
+    def test_itk_to_sitk_metadata(self):
+        test_image = itk.GetImageFromArray(create_test_image((10, 10, 10), 1))
+
+        test_metadata = {
+            "PatientName": "TEST-PATIENT",
+            "ScannerID": "1234",
+        }
+        metadata_dict = test_image.GetMetaDataDictionary()
+        for key, value in test_metadata.items():
+            metadata_dict[key] = value
+
+        result_image = itk_sitk(test_image)
+
+        result_keys = result_image.GetMetaDataKeys()
+        for key, value in test_metadata.items():
+            self.assertIn(key, result_keys)
+            self.assertEqual(result_image.GetMetaData(key), value)
