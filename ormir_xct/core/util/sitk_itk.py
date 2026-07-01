@@ -40,15 +40,7 @@ def sitk_itk(sitk_image):
 
 def itk_sitk(itk_image):
     """
-    Convert an ITK image to a SimpleITK image.
-
-    Parameters
-    ----------
-    itk_image : ITK.Image
-
-    Returns
-    -------
-    sitk_image : SimpleITK.Image
+    Convert an ITK image to a SimpleITK image, preserving metadata.
     """
     sitk_image = sitk.GetImageFromArray(
         itk.GetArrayFromImage(itk_image),
@@ -56,6 +48,18 @@ def itk_sitk(itk_image):
     )
     sitk_image.SetOrigin(tuple(itk_image.GetOrigin()))
     sitk_image.SetSpacing(tuple(itk_image.GetSpacing()))
-    sitk_image.SetDirection(itk.GetArrayFromMatrix(itk_image.GetDirection()).flatten())
+    sitk_image.SetDirection(
+        itk.GetArrayFromMatrix(itk_image.GetDirection()).flatten()
+        )
+
+    # Preserve scanner/header metadata
+    metadata_dict = itk_image.GetMetaDataDictionary()
+    for key in metadata_dict.GetKeys():
+        if key.startswith("ITK_"):
+            continue  # internal ITK keys, not scan metadata
+        try:
+            sitk_image.SetMetaData(key, str(metadata_dict[key]))
+        except (RuntimeError, TypeError):
+            pass  # skip if metadata cannot be converted to string
 
     return sitk_image
