@@ -8,6 +8,7 @@ dependencies:
   - pip
   - python=3.11
   - pip:
+    - zenodo-get
     - ormir-xct
     - itk
     - itk-core

@@ -41,7 +41,8 @@ dev = [
     "hypothesis",
     "pytest",
     "ruff",
-    "setuptools-scm"
+    "setuptools-scm",
+    "zenodo-get"
 ]
 
 [project.urls]
