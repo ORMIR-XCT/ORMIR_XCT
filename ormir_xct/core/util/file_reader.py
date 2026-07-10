@@ -2,37 +2,62 @@
 Created by: Michael Kuczynski
 Created on: June 18th, 2022
 """
+from collections import namedtuple
 
+from pathlib import Path
 import os
 import sys
-import itk
+
 import SimpleITK as sitk
+import numpy as np
+from py_aimio import read_aim, read_isq
+from function_helpers import sitk_to_np, np_to_sitk
 
 from ormir_xct.core.util.sitk_itk import itk_sitk
+
+"""
+Convenience tuple to hold a numpy image and its metadata. The metadata is a dictionary that can contain any information about the image, 
+and can be updated by image manipulation functions using the "Processlog" decorator (@TODO implentation pending).
+"""
+NumpyImageTuple = namedtuple("NumpyImageTuple", ["image", "metadata"])
 
 file_extensions = [".nii", ".mha", ".nrrd", ".aim", ".isq"]
 
 
-def file_reader(input_file_path):
+def file_reader(input_file_path, as_numpy=False, **kwargs):
     """
-    Read the input file using the correct reader. Scanco files can only be read
-    using ITK Scanco image IO but MHA/NII images can be read using SimpleITK.
+    Read the input file using the correct reader. MHA/NII images can be read using SimpleITK.
+    HR-pQCT (Scanco) AIM and ISQ images can be read using the py_aimio library.
+    
+    The function will return a SimpleITK image or a NumpyImageTuple depending on the as_numpy parameter.
+
+    Optional keyword arguments can be passed to the `aimio.read_aim` function, such as `density` or `hu`.
 
     Parameters
     ----------
     input_file_path : string
+        Path to the input file to be read.
+    
+    as_numpy : bool, optional
+        If True, the image will be returned as a numpy array, and metadata will be returned as a dictionary. If False, it will be returned as a SimpleITK image.
+        Default is False.
 
     Returns
     -------
-    image : SimpleITK.Image
+    image : SimpleITK.Image or NumpyImageTuple
     """
+    # check if the input file path is a `Path` object, if not convert it to a `Path` object
+    if not isinstance(input_file_path, Path):
+        input_file_path = Path(input_file_path)
+        if not input_file_path.exists():
+            raise FileNotFoundError(f"Input file {input_file_path} does not exist.")
+
     # Get the file extension and check if we can read it
-    input_filename = os.path.split(input_file_path)[1]
-    input_extension = os.path.splitext(input_filename)[1]
+    # input_filename = input_file_path.basename
+    input_extension = input_file_path.suffix
 
     input_extension = input_extension.lower()
-    image = None
-
+    
     if input_extension in file_extensions:
         if input_extension == ".aim" or input_extension == ".isq":
             # If the input AIM contains a version number, remove it and rename the file
@@ -41,23 +66,24 @@ def file_reader(input_file_path):
                 os.rename(input_file_path, scanco_filename)
                 input_file_path = scanco_filename
 
-            # For now, only read signed short Scanco images
-            image_type = itk.Image[itk.ctype("signed short"), 3]
-            reader = itk.ImageFileReader[image_type].New()
-            image_io = itk.ScancoImageIO.New()
-            reader.SetImageIO(image_io)
-            reader.SetFileName(input_file_path)
-            reader.Update()
-
-            image = reader.GetOutput()
-            image = itk_sitk(image)
+            # Read the image using aimio
+            if input_extension == ".aim":
+                image, metadata = read_aim(input_file_path, **kwargs)
+            else:
+                image, metadata = read_isq(input_file_path, **kwargs)
+            
+            if as_numpy:
+                return NumpyImageTuple(image, metadata)
+        
+            return np_to_sitk(image, metadata)
         else:
             image = sitk.ReadImage(input_file_path, sitk.sitkFloat32)
+            if as_numpy:
+                return sitk_to_np(image)
+            return image
+            
     else:
-        print("ERROR: File extension " + str(input_extension) + " not supported.")
-        sys.exit(0)
-
-    return image
+        raise ValueError(f"Input file {input_file_path} has an unsupported file extension. Supported extensions are: {file_extensions}")
 
 
 def verify_image(input_image, precision=None):
