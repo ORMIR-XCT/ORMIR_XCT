@@ -10,7 +10,8 @@ Description: Helper functions for image processing pipeline
 import numpy as np
 import SimpleITK as sitk
 
-from file_reader import file_reader
+from file_reader import file_reader, NumpyImageTuple
+
 
 def ensure_np(image, metadata=None):
     """
@@ -27,6 +28,12 @@ def ensure_np(image, metadata=None):
     -------
     np.ndarray
     """
+    if isinstance(image, NumpyImageTuple):
+        image, metadata = image.image, image.metadata
+        
+    if isinstance(image, tuple) and len(image) == 2:
+        image, metadata = image
+
     if isinstance(image, str):
         image = file_reader.read_image(image)
 
@@ -83,7 +90,7 @@ def sitk_to_np(image, metadata=None):
         metadata.update(_metadata)
         return sitk.GetArrayFromImage(image)
     
-    return sitk.GetArrayFromImage(image), metadata
+    return ImageTuple(sitk.GetArrayFromImage(image), metadata)
 
 def np_to_sitk(array, metadata=None):
     """
@@ -107,3 +114,24 @@ def np_to_sitk(array, metadata=None):
             sitk_image.SetMetaData(key, str(value))
     
     return sitk_image
+
+def add_metadata(image, metadata):
+    """
+    Add metadata to a SimpleITK image.
+
+    Parameters
+    ----------
+    image : SimpleITK.Image
+    metadata : dict
+
+    Returns
+    -------
+    SimpleITK.Image
+    """
+    if not isinstance(image, sitk.Image):
+        raise TypeError("Input must be a SimpleITK image.")
+    
+    for key, value in metadata.items():
+        image.SetMetaData(key, str(value))
+    
+    return image
